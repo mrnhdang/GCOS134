@@ -11,12 +11,10 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-
-
-const loginPage = () => {
+const LoginPage = () => {
 
     //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
-    const router = useRouter()
+    const router = useRouter();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -33,13 +31,13 @@ const loginPage = () => {
         event.preventDefault();
     };
 
-    return <>
+    return (
         <div className="flex flex-col justify-center items-center h-screen bg-whiteGray relative">
             <div className="flex flex-col justify-center p-3 bg-white rounded-xl shadow-NotificationItems w-1/4 h-3/5 ">
                 <div className="flex flex-col items-center text-black font-semibold text-[30px]">
                     LOGIN
                 </div>
-                <div className="flex flex-col items-center text-black font-normal text-[13px] mb-8">
+                <div className="flex flex-col items-center text-black text-[13px] mb-8">
                     Enter your account detail to login
                 </div>
                 <div className="flex flex-col items-center">
@@ -78,9 +76,9 @@ const loginPage = () => {
                     >Login</Button>
                 </div>
 
-                <div className="flex flex-col items-center text-black font-normal text-[10px] mt-8">
+                <div className="flex flex-col items-center text-black text-[10px] mt-8">
                     <div className="flex flex-row">
-                        <div> Don't have account? </div>
+                        <div> Don&apos;t have account? </div>
                         <div className="font-bold ml-1">Register now</div>
                     </div>
                 </div>
@@ -88,6 +86,6 @@ const loginPage = () => {
             <div>
             </div>
         </div>
-    </>;
+    );
 }
-export default loginPage;
+export default LoginPage;
