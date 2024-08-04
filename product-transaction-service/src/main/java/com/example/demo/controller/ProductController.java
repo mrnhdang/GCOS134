@@ -6,10 +6,12 @@ import com.example.demo.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/product")
@@ -22,6 +24,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam("query") String search) {
+        List<Product> products = productService.searchProduct(search);
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductDetail(@PathVariable("id") String id) {
         Product productDetail = productService.getProductById(id);
@@ -31,7 +39,7 @@ public class ProductController {
     @PostMapping("/add")
     public ResponseEntity<Product> addProduct(@RequestBody ProductPostDto dto) {
         Product newProduct = productService.addProduct(dto);
-        return ResponseEntity.ok(newProduct);
+        return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 
     @PatchMapping("/edit/{id}")

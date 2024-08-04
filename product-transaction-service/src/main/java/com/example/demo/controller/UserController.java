@@ -29,12 +29,13 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody UserRegisterDto dto){
+    public ResponseEntity<User> registerUser(@RequestBody UserRegisterDto dto) {
         User newUser = userService.registerUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
+
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody UserLoginDto dto){
+    public ResponseEntity<User> loginUser(@RequestBody UserLoginDto dto) {
         User user = userService.loginUser(dto);
         return ResponseEntity.ok(user);
     }
@@ -49,4 +50,8 @@ public class UserController {
         userService.deleteUserById(id);
     }
 
+    @GetMapping("/{id}/order")
+    public ResponseEntity<?> getUserOrders(@PathVariable("id") String userId) {
+        return ResponseEntity.ok(userService.getUserOrders(userId));
+    }
 }
