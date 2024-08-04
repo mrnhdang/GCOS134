@@ -21,8 +21,11 @@ public class UserService {
 
     public User registerUser(UserRegisterDto dto) {
         User user = User.builder().username(dto.getUsername())
+                .address(dto.getAddress())
+                .phonenumber(dto.getPhonenumber())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
+                .role(dto.getRole())
                 .build();
         return userRepository.save(user);
     }
@@ -38,6 +41,25 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    public User getUserById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+    }
+
+    public List<User> getAllUser() {return userRepository.findAll();    }
+
+    public User updateUser(UserRegisterDto dto, String id) {
+        User saveUser = User.builder().id(id).username(dto.getUsername())
+                .address(dto.getAddress())
+                .phonenumber(dto.getPhonenumber())
+                .password(dto.getPassword())
+                .email(dto.getEmail())
+                .role(dto.getRole())
+                .build();
+        return userRepository.save(saveUser);
+    }
+
+    public void deleteUserById(String id) { userRepository.deleteById(id);    }
     public List<Order> getUserOrders(String userId) {
         return orderRepository.findByUser(userId);
     }
