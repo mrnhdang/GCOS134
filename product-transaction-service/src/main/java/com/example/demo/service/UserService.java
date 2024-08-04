@@ -31,9 +31,8 @@ public class UserService {
     }
 
     public User loginUser(UserLoginDto dto) {
-        User user = userRepository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword())
+        return userRepository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword())
                 .orElseThrow(() -> new RuntimeException("Invalid username or password"));
-        return user;
     }
 
     public User getUserByUsername(String username) {
