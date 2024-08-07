@@ -14,9 +14,12 @@
     "@mui/icons-material": "^5.16.4",
     "@mui/material": "^5.16.4",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "http-proxy-middleware": "^3.0.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.2.1",
+    "react-responsive-carousel": "^3.2.23",
     "styled-components": "^6.1.12"
   },
   "devDependencies": {
