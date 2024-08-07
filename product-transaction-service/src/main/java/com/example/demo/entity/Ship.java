@@ -13,21 +13,16 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "order")
-public class Order {
+@NoArgsConstructor
+@Document(collection = "ship")
+public class Ship {
+
     @Id
     private String id;
-    private LocalDate purchaseDate;
     private OrderStatus status;
+    private LocalDate receivedDate;
 
     @DocumentReference
-    private Ship ship;
-
-    @DocumentReference
-    private User user;
-
-    @DocumentReference
-    private List<Product> products;
+    private List<Order> orders;
 }
