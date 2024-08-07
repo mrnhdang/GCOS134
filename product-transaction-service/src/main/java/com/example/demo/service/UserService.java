@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.OrderGetDetailDto;
 import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegisterDto;
 import com.example.demo.entity.Order;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserService {
     private UserRepository userRepository;
     private OrderRepository orderRepository;
+    private OrderService orderService;
 
     public User registerUser(UserRegisterDto dto) {
         User user = User.builder().username(dto.getUsername())
@@ -42,10 +45,12 @@ public class UserService {
 
     public User getUserById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public List<User> getAllUser() {return userRepository.findAll();    }
+    public List<User> getAllUser() {
+        return userRepository.findAll();
+    }
 
     public User updateUser(UserRegisterDto dto, String id) {
         User saveUser = User.builder().id(id).username(dto.getUsername())
@@ -58,9 +63,19 @@ public class UserService {
         return userRepository.save(saveUser);
     }
 
-    public void deleteUserById(String id) { userRepository.deleteById(id);    }
-    public List<Order> getUserOrders(String userId) {
-        return orderRepository.findByUser(userId);
+    public void deleteUserById(String id) {
+        userRepository.deleteById(id);
+    }
+
+    public List<OrderGetDetailDto> getUserOrders(String userId) {
+        List<Order> orders = orderRepository.findByUser(userId);
+        List<OrderGetDetailDto> orderGetDetailDtos = new ArrayList<>();
+        if (!orders.isEmpty()) {
+            orders.forEach(order -> {
+                orderGetDetailDtos.add(orderService.getOrderDetails(order.getId()));
+            });
+        }
+        return orderGetDetailDtos;
     }
 
 }

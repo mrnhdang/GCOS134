@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.OrderGetDetailDto;
 import com.example.demo.dto.OrderPostDto;
-import com.example.demo.entity.Order;
-import com.example.demo.entity.OrderStatus;
-import com.example.demo.entity.Product;
-import com.example.demo.entity.User;
+import com.example.demo.dto.OrderProductDto;
+import com.example.demo.entity.*;
+import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.repository.OrderDetailRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
@@ -25,9 +26,38 @@ public class OrderService {
     private OrderRepository orderRepository;
     private UserRepository userRepository;
     private ProductRepository productRepository;
+    private OrderDetailRepository orderDetailRepository;
+
+    public Order checkExistOrder(String orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
+    }
 
     public List<Order> getAllOrder() {
         return orderRepository.findAll();
+    }
+
+    public OrderGetDetailDto getOrderDetails(String orderId) {
+        Order orderDetails = checkExistOrder(orderId);
+
+        List<OrderProductDto> orderProductDtos = new ArrayList<>();
+
+        orderDetails.getProducts().forEach(product -> {
+            OrderDetail orderDetail = orderDetailRepository.findByProductAndOrder(product.getId(), orderId);
+            OrderProductDto dto = OrderProductDto.builder()
+                    .productId(product.getId())
+                    .productName(product.getProductName())
+                    .price(product.getPrice())
+                    .orderAmount(orderDetail.getTotalAmount())
+                    .build();
+            orderProductDtos.add(dto);
+        });
+
+        return OrderGetDetailDto.builder()
+                .id(orderId)
+                .purchaseDate(orderDetails.getPurchaseDate())
+                .user(orderDetails.getUser())
+                .products(orderProductDtos)
+                .build();
     }
 
     public List<Order> searchOrder(LocalDate from, LocalDate to) {
@@ -41,29 +71,41 @@ public class OrderService {
         return orderRepository.save(cancelledOrder);
     }
 
-    public List<Order> placeOrders(OrderPostDto dto) {
-        List<Order> mappedOrder = new ArrayList<>();
+    public Order placeOrders(OrderPostDto dto) {
+        Order newOrder;
+        List<OrderDetail> orderDetails = new ArrayList<>();
         List<Product> products = new ArrayList<>();
+
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new NotFoundException("User with id " + dto.userId() + " doesn't exist."));
 
         dto.products().forEach(orderProductDto -> {
-            Product orderProduct = productRepository.findById(orderProductDto.productId())
-                    .orElseThrow(() -> new NotFoundException("Product with id " + orderProductDto.productId() + " doesn't exist."));
+            if (orderProductDto.getOrderAmount() <= 0) {
+                throw new InvalidInputParameter("Order amount must be more than 0.");
+            }
+            Product orderProduct = productRepository.findById(orderProductDto.getProductId())
+                    .orElseThrow(() -> new NotFoundException("Product with id " + orderProductDto.getProductId() + " doesn't exist."));
             products.add(orderProduct);
-            Order newOrder = Order.builder()
-                    .user(user)
-                    .purchaseDate(LocalDate.now())
-                    .totalAmount(orderProductDto.orderAmount())
-                    .status(OrderStatus.PROCESSING)
-                    .build();
-            mappedOrder.add(newOrder);
+            OrderDetail orderDetail = OrderDetail.builder().product(orderProduct).totalAmount(orderProductDto.getOrderAmount()).build();
+            orderDetails.add(orderDetail);
         });
 
-        mappedOrder.forEach(order -> {
-            order.setProducts(products);
-        });
+        newOrder = Order.builder()
+                .user(user)
+                .purchaseDate(LocalDate.now())
+                .products(products)
+                .status(OrderStatus.PROCESSING)
+                .build();
+        Order savedOrder = orderRepository.save(newOrder);
+        orderDetails.forEach(orderDetail -> orderDetail.setOrder(savedOrder));
+        orderDetailRepository.saveAll(orderDetails);
 
-        return orderRepository.saveAll(mappedOrder);
+        return savedOrder;
+    }
+
+    public void deleteOrder(String orderId) {
+        checkExistOrder(orderId);
+        orderDetailRepository.deleteByOrderId(orderId);
+        orderRepository.deleteById(orderId);
     }
 }

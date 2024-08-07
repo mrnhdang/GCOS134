@@ -13,10 +13,17 @@ import java.time.LocalDate;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler({NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
+    public ResponseEntity<Object> handleNotFoundException(RuntimeException ex) {
         ErrorMessage message = new ErrorMessage(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDate.now());
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({InvalidInputParameter.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<Object> handleInvalidParameterException(RuntimeException ex) {
+        ErrorMessage message = new ErrorMessage(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY, LocalDate.now());
+        return new ResponseEntity<>(message, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
