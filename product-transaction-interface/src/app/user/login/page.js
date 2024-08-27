@@ -49,9 +49,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-whiteGray relative">
+    <div className="flex flex-col justify-center items-center h-screen bg-whiteGray relative ">
       <div className="flex flex-col justify-center p-3 bg-white rounded-xl shadow-NotificationItems w-1/4 h-3/5 ">
-        <div className="flex flex-col items-center text-black font-semibold text-[30px]">
+      <div className="flex flex-col items-center text-black font-mono font-semibold text-[30px]">
           LOGIN
         </div>
         <div className="flex flex-col items-center text-black text-[13px] mb-8">
@@ -96,7 +96,6 @@ const LoginPage = () => {
           <Button
             className="mt-4 ml-2 w-[250px]"
             variant="contained"
-            // onClick={() => router.push('/hello')}
             onClick={() => {
               handleLogin();
             }}
@@ -110,14 +109,13 @@ const LoginPage = () => {
             <div> Don&apos;t have account? </div>
             <div
               className="font-bold ml-1"
-              onClick={() => router.push("/regsiter")}
+              onClick={() => router.push("/user/register")}
             >
               Register now
             </div>
           </div>
         </div>
       </div>
-      <div></div>
     </div>
   );
 };

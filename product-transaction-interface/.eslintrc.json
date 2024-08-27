@@ -1,3 +1,16 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "eslint:recommended",
+    "prettier"
+  ],
+  "plugins": ["react", "react-hooks", "jsx-a11y", "import", "prettier"],
+  "rules": {
+    "prettier/prettier": ["error", { "singleQuote": false }],
+    "react/react-in-jsx-scope": "off", // Not needed with Next.js
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "import/no-anonymous-default-export": "off", // Allow anonymous default exports
+    "react/prop-types": "off"
+  }
 }

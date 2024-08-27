@@ -12,13 +12,13 @@ import Paper from "@mui/material/Paper";
 import { fetchListProduct, deleteProduct } from "../../../client/product_api";
 import { Button } from "@mui/material";
 
-const AdminPage = () => {
-  const [selectedFunction, setSelectedFunction] = useState("products");
-  const router = useRouter();
 
+const AdminPage = () => {
+
+  const router = useRouter();
+  const [selectedFunction, setSelectedFunction] = useState("products");
   const [listProduct, setListProduct] = useState([]);
-  const [listCategories, setListCategories] = useState([]);
-  const [listBrands, setListBrands] = useState([]);
+
   useEffect(() => {
     getListProduct();
   }, []);
@@ -48,40 +48,9 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="bg-gray-200 p-4 w-1/4">
-        <h2 className="text-lg font-bold mb-4">Admin Page</h2>
-        <ul>
-          <li
-            className={`cursor-pointer hover:bg-gray-300 p-2 ${
-              selectedFunction === "products" ? "bg-gray-300" : ""
-            }`}
-            onClick={() => setSelectedFunction("products")}
-          >
-            Product
-          </li>
-          <li
-            className={`cursor-pointer hover:bg-gray-300 p-2 ${
-              selectedFunction === "categories" ? "bg-gray-300" : ""
-            }`}
-            onClick={() => setSelectedFunction("categories")}
-          >
-            Categories
-          </li>
-          <li
-            className={`cursor-pointer hover:bg-gray-300 p-2 ${
-              selectedFunction === "brands" ? "bg-gray-300" : ""
-            }`}
-            onClick={() => setSelectedFunction("brands")}
-          >
-            Brand
-          </li>
-        </ul>
-      </div>
-
+    <Paper className="flex w-full p-4">
       {/* Main Content */}
-      <div className="flex-1 p-4">
+      <div className="flex-1">
         <div className="flex flex-row items-center">
           <h2 className="text-lg font-bold mb-4">{selectedFunction}</h2>
           <div
@@ -93,14 +62,7 @@ const AdminPage = () => {
             <FaPlus />
           </div>
         </div>
-        {/* {selectedFunction === 'products' && (
-                    <DataGrid
-                        rows={products}
-                        columns={columns}
-                        pageSize={10}
-                        rowsPerPageOptions={[10]}
-                    />
-                )} */}
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -114,7 +76,7 @@ const AdminPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listProduct.map((row, index) => (
+              {listProduct?.map((row, index) => (
                 <TableRow
                   key={row.name}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -154,7 +116,7 @@ const AdminPage = () => {
         </TableContainer>
       </div>
       {/* Test */}
-    </div>
+    </Paper>
   );
 };
 

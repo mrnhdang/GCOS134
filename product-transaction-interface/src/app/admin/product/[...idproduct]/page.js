@@ -15,6 +15,7 @@ export default function ProductForm({ params }) {
   const router = useRouter();
   const idParam = params.idproduct;
   const [productDetail, setProductDetail] = useState({});
+  
   useEffect(() => {
     getProductDetail();
   }, []);

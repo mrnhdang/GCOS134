@@ -4,7 +4,7 @@ import "./globals.css";
 const inter = Roboto_Mono({ subsets: ["latin"], weight: "400" });
 
 export const metadata = {
-  title: "Sales Assistant",
+  title: "Ecomerce",
   description: "Product transaction services",
 };
 

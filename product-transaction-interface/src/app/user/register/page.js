@@ -8,12 +8,18 @@ import {
   InputLabel,
   FormControl,
   Button,
+  TextField,
+  Input,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { registerClient } from "../../../client/client_api";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
+import KeyOffRoundedIcon from "@mui/icons-material/KeyOffRounded";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
   const router = useRouter();
 
@@ -55,111 +61,69 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-whiteGray relative">
-      <div className="flex flex-col justify-center p-3 bg-white rounded-xl shadow-NotificationItems w-1/4 h-3/5 ">
-        <div className="flex flex-col items-center text-black font-semibold text-[30px]">
+      <div className="flex flex-col justify-center items-center p-3 bg-white rounded-xl shadow-NotificationItems w-1/2 h-3/5 ">
+        <div className="flex flex-col items-center text-black font-mono font-semibold text-[30px]">
           REGISTER
         </div>
         <div className="flex flex-col items-center text-black text-[13px] mb-8">
           Enter your infomation for account
         </div>
-        <div className="flex flex-col items-center">
-          <FormControl
-            sx={{
-              m: 1,
-              width: {
-                xs: "100%",
-                sm: "25ch",
-                md: "30ch",
-                lg: "35ch",
-              },
+        <div className="flex flex-col items-center justify-center align-middle gap-6 w-2/5">
+          <TextField
+            fullWidth
+            variant="standard"
+            id="outlined-basic"
+            type={"text"}
+            label="Username"
+            onChange={handleInputUsername}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AccountCircleOutlinedIcon />
+                </InputAdornment>
+              ),
             }}
-            variant="outlined"
-          >
-            <InputLabel htmlFor="outlined-adornment-password">
-              Username
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-basic"
-              type={"text"}
-              label="Username"
-              onChange={handleInputUsername}
-              className={`
-                                w-full
-                                sm:w-[25ch]
-                                md:w-[30ch]
-                                lg:w-[35ch]
-                              `}
-            />
-          </FormControl>
-          <FormControl
-            sx={{
-              m: 1,
-              width: {
-                xs: "100%",
-                sm: "25ch",
-                md: "30ch",
-                lg: "35ch",
-              },
+          />
+
+          <TextField
+            fullWidth
+            variant="standard"
+            id="outlined-basic"
+            type={"Email"}
+            onChange={handleInputEmail}
+            label="Email"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AlternateEmailOutlinedIcon />
+                </InputAdornment>
+              ),
             }}
-            variant="outlined"
-          >
-            <InputLabel htmlFor="outlined-adornment-password">
+          />
+
+          <FormControl variant="standard" fullWidth>
+            <InputLabel htmlFor="standard-adornment-password">
               Password
             </InputLabel>
-            <OutlinedInput
-              id="outlined-basic"
+            <Input
               type={showPassword ? "text" : "password"}
-              onChange={handleInputPassword}
-              className={`
-                                w-full
-                                sm:w-[25ch]
-                                md:w-[30ch]
-                                lg:w-[35ch]
-                              `}
-              endAdornment={
-                <InputAdornment position="end">
+              startAdornment={
+                <InputAdornment>
                   <IconButton
-                    aria-label="toggle password visibility"
+                    size="small"
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
-                    edge="end"
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <KeyOffRoundedIcon /> : <KeyRoundedIcon />}
                   </IconButton>
                 </InputAdornment>
               }
-              label="Password"
             />
           </FormControl>
-          <FormControl
-            sx={{
-              m: 1,
-              width: {
-                xs: "100%",
-                sm: "25ch",
-                md: "30ch",
-                lg: "35ch",
-              },
-            }}
-            variant="outlined"
-          >
-            <InputLabel htmlFor="outlined-adornment-password">Email</InputLabel>
-            <OutlinedInput
-              id="outlined-basic"
-              type={"Email"}
-              onChange={handleInputEmail}
-              className={`
-                                w-full
-                                sm:w-[25ch]
-                                md:w-[30ch]
-                                lg:w-[35ch]
-                              `}
-              label="Email"
-            />
-          </FormControl>
+
           <Button
             className="mt-4 ml-2 w-[250px]"
-            variant="contained"
+            variant="outlined"
             onClick={() => {
               hanldeRegister();
             }}
@@ -167,9 +131,20 @@ const LoginPage = () => {
             Register
           </Button>
         </div>
+        
+        <div className="flex flex-col items-center text-black text-[10px] mt-8">
+          <div className="flex flex-row">
+            <div> Already have account? </div>
+            <div
+              className="font-bold ml-1"
+              onClick={() => router.push("/user/login")}
+            >
+              Login now
+            </div>
+          </div>
+        </div>
       </div>
-      <div></div>
     </div>
   );
 };
-export default LoginPage;
+export default RegisterPage;
