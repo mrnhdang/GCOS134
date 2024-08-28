@@ -1,7 +1,10 @@
 package com.example.demo.dto;
 
-import com.example.demo.exception.InvalidInputParameter;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
@@ -15,7 +18,7 @@ public class OrderProductDto {
     @NonNull
     private String productId;
     @NonNull
-    private Integer orderAmount;
+    private Integer orderAmount = 0;
     private String productName;
     private BigDecimal price;
 }

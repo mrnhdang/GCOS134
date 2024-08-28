@@ -8,26 +8,18 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "purchase_order")
-public class Order {
+@Document(collection = "inventory")
+public class Inventory {
     @Id
     private String id;
-    private LocalDate purchaseDate;
-    private OrderStatus status;
+    private Integer currentQuantity = 0;
 
     @DocumentReference
-    private Ship ship;
+    private Product product;
 
-    @DocumentReference
-    private User user;
 
-    @DocumentReference
-    private List<Product> products;
 }

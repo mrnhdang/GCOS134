@@ -11,15 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "user")
-public class User {
+@Document(collection = "category")
+public class Category {
     @Id
     private String id;
-    private String username;
-    private String address;
-    private String phoneNumber;
-    private String password;
-    private String email;
-    private String role;
-
+    private String CategoryName;
 }

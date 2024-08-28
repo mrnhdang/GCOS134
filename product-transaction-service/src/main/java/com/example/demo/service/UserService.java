@@ -25,7 +25,7 @@ public class UserService {
     public User registerUser(UserRegisterDto dto) {
         User user = User.builder().username(dto.getUsername())
                 .address(dto.getAddress())
-                .phonenumber(dto.getPhonenumber())
+                .phoneNumber(dto.getPhonenumber())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
                 .role(dto.getRole())
@@ -55,7 +55,7 @@ public class UserService {
     public User updateUser(UserRegisterDto dto, String id) {
         User saveUser = User.builder().id(id).username(dto.getUsername())
                 .address(dto.getAddress())
-                .phonenumber(dto.getPhonenumber())
+                .phoneNumber(dto.getPhonenumber())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
                 .role(dto.getRole())

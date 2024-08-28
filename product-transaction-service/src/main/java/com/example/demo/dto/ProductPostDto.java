@@ -4,5 +4,5 @@ import org.springframework.lang.NonNull;
 
 import java.math.BigDecimal;
 
-public record ProductPostDto(@NonNull String name, @NonNull BigDecimal price) {
+public record ProductPostDto(@NonNull String name, @NonNull BigDecimal price, String image, @NonNull Integer currentQuantity) {
 }

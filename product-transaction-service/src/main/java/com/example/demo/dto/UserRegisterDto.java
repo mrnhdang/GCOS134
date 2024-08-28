@@ -3,15 +3,15 @@ package com.example.demo.dto;
 public class UserRegisterDto {
     private String username;
     private String address;
-    private String phonenumber;
+    private String phoneNumber;
     private String password;
     private String email;
     private String role;
 
-    public UserRegisterDto(String username, String address, String phonenumber, String password, String email, String role) {
+    public UserRegisterDto(String username, String address, String phoneNumber, String password, String email, String role) {
         this.username = username;
         this.address = address;
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.email = email;
         this.role = role;
@@ -34,11 +34,11 @@ public class UserRegisterDto {
     }
 
     public String getPhonenumber() {
-        return phonenumber;
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public void setPhonenumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPassword() {

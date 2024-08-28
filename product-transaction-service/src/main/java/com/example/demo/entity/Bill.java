@@ -6,26 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "shipment")
-public class Ship {
-
+@Document(collection = "bill")
+public class Bill {
     @Id
     private String id;
-    private OrderStatus status;
-    private LocalDate receivedDate;
+    private LocalDate billDate;
 
-    @DocumentReference
-    private User user;
-
-    @DocumentReference
-    private List<Order> orders;
 }

@@ -4,10 +4,12 @@ import com.example.demo.dto.ShipPostDto;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderStatus;
 import com.example.demo.entity.Ship;
+import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ShipRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.List;
 public class ShipService {
     private ShipRepository shipRepository;
     private OrderRepository orderRepository;
+    private UserRepository userRepository;
 
     public List<Ship> getAllShip() {
         return shipRepository.findAll();
@@ -40,8 +43,9 @@ public class ShipService {
         dto.orders().forEach(orderId -> {
             orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
         });
+        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new NotFoundException("User with id " + dto.userId() + " doesn't exist."));
         List<Order> orders = orderRepository.findAllById(dto.orders());
-        Ship newShip = Ship.builder().status(OrderStatus.PROCESSING).orders(orders).build();
+        Ship newShip = Ship.builder().status(OrderStatus.PROCESSING).user(user).orders(orders).build();
         return shipRepository.save(newShip);
     }
 
