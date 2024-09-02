@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.ProductPostDto;
+import com.example.demo.entity.Category;
 import com.example.demo.entity.Inventory;
 import com.example.demo.entity.Product;
 import com.example.demo.repository.InventoryRepository;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class ProductService {
     private ProductRepository productRepository;
     private InventoryRepository inventoryRepository;
+    private CategoryService categoryService;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -30,16 +32,19 @@ public class ProductService {
         } else return Collections.emptyList();
     }
 
-
     public Product getProductById(String id) {
         return productRepository.findById(id).orElse(null);
     }
 
     public Product addProduct(ProductPostDto dto) {
-        Product newProduct = Product.builder().productName(dto.name()).price(dto.price()).image(dto.image()).build();
-        productRepository.save(newProduct);
-        addInventory(newProduct, dto.currentQuantity());
-        return newProduct;
+        Category category = categoryService.checkExistCategory(dto.categoryId());
+        Product newProduct = Product.builder()
+                .productName(dto.productName())
+                .price(dto.price())
+                .image(dto.image())
+                .category(category)
+                .build();
+        return productRepository.save(newProduct);
     }
 
     public Inventory addInventory(Product newProduct, Integer currentQuantity) {
@@ -47,7 +52,7 @@ public class ProductService {
     }
 
     public Product updateProduct(ProductPostDto dto, String id) {
-        Product savedProduct = Product.builder().id(id).productName(dto.name()).price(dto.price()).build();
+        Product savedProduct = Product.builder().id(id).productName(dto.productName()).price(dto.price()).build();
         return productRepository.save(savedProduct);
     }
 
