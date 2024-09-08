@@ -5,6 +5,8 @@ import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegisterDto;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.User;
+import com.example.demo.exception.InvalidInputParameter;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -35,17 +37,17 @@ public class UserService {
 
     public User loginUser(UserLoginDto dto) {
         return userRepository.findByUsernameAndPassword(dto.getUsername(), dto.getPassword())
-                .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+                .orElseThrow(() -> new InvalidInputParameter("Invalid username or password"));
     }
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User getUserById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public List<User> getAllUser() {
@@ -59,6 +61,7 @@ public class UserService {
                 .password(dto.getPassword())
                 .email(dto.getEmail())
                 .role(dto.getRole())
+                .balance(dto.getBalance())
                 .build();
         return userRepository.save(saveUser);
     }

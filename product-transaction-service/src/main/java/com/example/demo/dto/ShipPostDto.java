@@ -4,5 +4,5 @@ import org.springframework.lang.NonNull;
 
 import java.util.List;
 
-public record ShipPostDto(@NonNull List<String> orders) {
+public record ShipPostDto(@NonNull String userId, @NonNull List<String> orders) {
 }

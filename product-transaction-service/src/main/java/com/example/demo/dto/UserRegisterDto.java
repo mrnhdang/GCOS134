@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import java.math.BigDecimal;
+
 public class UserRegisterDto {
     private String username;
     private String address;
@@ -7,14 +9,16 @@ public class UserRegisterDto {
     private String password;
     private String email;
     private String role;
+    private BigDecimal balance;
 
-    public UserRegisterDto(String username, String address, String phoneNumber, String password, String email, String role) {
+    public UserRegisterDto(String username, String address, String phoneNumber, String password, String email, String role, BigDecimal balance) {
         this.username = username;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.email = email;
         this.role = role;
+        this.balance = balance;
     }
 
     public String getUsername() {
@@ -63,6 +67,22 @@ public class UserRegisterDto {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }
 

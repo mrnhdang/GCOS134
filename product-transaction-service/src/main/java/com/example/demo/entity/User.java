@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,6 +22,7 @@ public class User {
     private String phoneNumber;
     private String password;
     private String email;
+    private BigDecimal balance = BigDecimal.valueOf(0);
     private String role;
 
 }

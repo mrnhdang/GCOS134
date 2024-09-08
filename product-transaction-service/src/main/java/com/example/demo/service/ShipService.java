@@ -43,8 +43,9 @@ public class ShipService {
         dto.orders().forEach(orderId -> {
             orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
         });
+        User user = userRepository.findById(dto.userId()).orElseThrow(() -> new NotFoundException("User with id " + dto.userId() + " doesn't exist."));
         List<Order> orders = orderRepository.findAllById(dto.orders());
-        Ship newShip = Ship.builder().status(OrderStatus.PROCESSING).orders(orders).build();
+        Ship newShip = Ship.builder().status(OrderStatus.PROCESSING).user(user).orders(orders).build();
         return shipRepository.save(newShip);
     }
 

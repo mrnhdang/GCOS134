@@ -24,5 +24,8 @@ public class Ship {
     private LocalDate receivedDate;
 
     @DocumentReference
+    private User user;
+
+    @DocumentReference
     private List<Order> orders;
 }

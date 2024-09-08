@@ -4,6 +4,7 @@ import com.example.demo.dto.ProductPostDto;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Inventory;
 import com.example.demo.entity.Product;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ public class ProductService {
     }
 
     public Product getProductById(String id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product with id " + id + " doesn't exist."));
     }
 
     public Product addProduct(ProductPostDto dto) {
@@ -57,6 +58,7 @@ public class ProductService {
     }
 
     public void deleteProductById(String id) {
+        getProductById(id);
         productRepository.deleteById(id);
     }
 }
