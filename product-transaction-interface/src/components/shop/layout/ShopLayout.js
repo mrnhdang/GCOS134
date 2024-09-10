@@ -2,7 +2,6 @@
 import { Badge, Box, IconButton, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import styled from "styled-components";
 
 const NAV_URL = [
   { label: "Home", url: "/product" },
@@ -25,9 +24,8 @@ const ShopLayout = ({ children }) => {
             {/* Nav link */}
             {NAV_URL?.map((item, index) => (
               <a
-                className={`${
-                  pathname === item.url ? "underline" : ""
-                } hover:font-bold`}
+                className={`${pathname === item.url ? "underline" : ""
+                  } hover:font-bold`}
                 key={index}
                 href={item.url}
               >
@@ -46,7 +44,7 @@ const ShopLayout = ({ children }) => {
           </div>
         </Box>
       </Box>
-      <div className="w-full p-2 mt-14 h-screen">{children}</div>
+      <div className="w-full p-2 mt-14 h-full">{children}</div>
     </div>
   );
 };

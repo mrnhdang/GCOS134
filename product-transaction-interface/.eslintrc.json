@@ -5,11 +5,30 @@
     "eslint:recommended",
     "prettier"
   ],
-  "plugins": ["react", "react-hooks", "jsx-a11y", "import", "prettier"],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "jsx-a11y",
+    "import",
+    "prettier",
+    "eslint-plugin-react",
+    "eslint-plugin-react-hooks",
+    "eslint-plugin-next"
+  ],
   "rules": {
-    "prettier/prettier": ["error", { "singleQuote": false }],
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false
+      }
+    ],
     "react/react-in-jsx-scope": "off", // Not needed with Next.js
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "import/no-anonymous-default-export": "off", // Allow anonymous default exports
     "react/prop-types": "off"
   }

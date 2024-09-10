@@ -1,18 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Box,
   Grid,
   Typography,
   Button,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Card,
 } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { fetchDetailProduct } from "../../../client/product_api";
 
 export default function ProductDetailPage({ params }) {
   const parame = params.productId;
