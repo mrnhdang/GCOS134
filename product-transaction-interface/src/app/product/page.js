@@ -22,7 +22,7 @@ import { CartStateContext } from "@/provider/CartContext";
 const ProductHomePage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
   const router = useRouter();
-  const { cart, setCart } = useContext(CartStateContext);
+  const { cart, addToCart } = useContext(CartStateContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [listProduct, setListProduct] = useState([]);
 
@@ -40,7 +40,7 @@ const ProductHomePage = () => {
   };
 
   const handleOpenCartModal = (product) => {
-    setCart((prev) => [...prev, product]);
+    addToCart(product)
     setOpenSnackbar(true);
   };
 
@@ -52,28 +52,27 @@ const ProductHomePage = () => {
       />
       <Grid
         container
-        spacing={2}
-        sx={{ p: 2, width: "85%", height: "100%", backgroundColor: "white" }}
+        sx={{
+          p: 2, width: "85%", height: "100%", backgroundColor: "white", justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
         {listProduct?.map((product) => (
-          <Grid item xs={6} sm={4} md={2} key={product.id}>
+          <Grid sx={{
+            width: "100%", height: "100%", marginBottom: 1, flexShrink: "inherit"
+          }} item xs={6} sm={4} md={2} key={product.id}>
             <Card
               sx={{
                 width: "200px",
-                height: "500px",
+                height: "350px",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
-                justifyItems: "stretch",
                 alignContent: "centers",
-                gap: 1,
-                p: 1,
               }}
             >
               <CardMedia
                 sx={{ height: "100%" }}
-                image={product.image}
-                title="green iguana"
+                image={product?.image}
               />
               <CardContent>
                 <Typography gutterBottom variant="a" component="div">
@@ -101,9 +100,10 @@ const ProductHomePage = () => {
               </CardActions>
             </Card>
           </Grid>
-        ))}
-      </Grid>
-    </div>
+        ))
+        }
+      </Grid >
+    </div >
   );
 };
 export default ProductHomePage;

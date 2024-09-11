@@ -21,7 +21,7 @@ export default function CustomSnackbar({ openSnackbar, setOpenSnackbar }) {
         TransitionComponent={Slide}
       >
         <Alert severity="success" variant="filled">
-          This is a success Alert inside a Snackbar!
+          Add to cart successfully
         </Alert>
       </Snackbar>
     </div>

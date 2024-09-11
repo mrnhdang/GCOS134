@@ -28,9 +28,8 @@ const ShopLayout = ({ children }) => {
             {/* Nav link */}
             {NAV_URL?.map((item, index) => (
               <a
-                className={`${
-                  pathname === item.url ? "underline" : ""
-                } hover:font-bold`}
+                className={`${pathname === item.url ? "underline" : ""
+                  } hover:font-bold`}
                 key={index}
                 href={item.url}
               >
@@ -49,7 +48,7 @@ const ShopLayout = ({ children }) => {
           </div>
         </Box>
       </Box>
-      <div className="w-full p-2 mt-20 h-full">
+      <div className="w-full mt-20 h-full">
         <CustomDrawer
           cart={cart}
           openDrawer={openDrawer}
