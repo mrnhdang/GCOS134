@@ -1,18 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-} from "@mui/material";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Box, Grid, Typography, Button } from "@mui/material";
 
 export default function ProductDetailPage({ params }) {
   const parame = params.productId;
   const [productDetail, setProductDetail] = useState({});
-  const router = useRouter();
 
   useEffect(() => {
     getProductDetail();

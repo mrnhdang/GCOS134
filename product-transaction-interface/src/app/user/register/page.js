@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  OutlinedInput,
   InputAdornment,
   IconButton,
   InputLabel,
@@ -11,9 +10,6 @@ import {
   TextField,
   Input,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { registerClient } from "../../../client/client_api";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
@@ -131,7 +127,7 @@ const RegisterPage = () => {
             Register
           </Button>
         </div>
-        
+
         <div className="flex flex-col items-center text-black text-[10px] mt-8">
           <div className="flex flex-row">
             <div> Already have account? </div>

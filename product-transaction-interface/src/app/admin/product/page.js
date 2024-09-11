@@ -9,12 +9,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { fetchListProduct, deleteProduct } from "../../../client/product_api";
 import { Button } from "@mui/material";
 
-
 const AdminPage = () => {
-
   const router = useRouter();
   const [selectedFunction, setSelectedFunction] = useState("products");
   const [listProduct, setListProduct] = useState([]);
@@ -89,7 +86,7 @@ const AdminPage = () => {
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">
                     <Button
-                      //   className="rounded-lg p-1 bg-green-600 flex text-center text-white justify-center items-center"
+                      className="rounded-lg p-1 bg-green-600 flex text-center text-white justify-center items-center"
                       onClick={() => {
                         router.push(`/admin/product/${row.id}`);
                       }}

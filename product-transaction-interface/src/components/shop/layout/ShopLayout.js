@@ -2,6 +2,9 @@
 import { Badge, Box, IconButton, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import CustomDrawer from "@/generic/CustomDrawer";
+import { useContext, useState } from "react";
+import { CartStateContext } from "@/provider/CartContext";
 
 const NAV_URL = [
   { label: "Home", url: "/product" },
@@ -11,6 +14,8 @@ const NAV_URL = [
 
 const ShopLayout = ({ children }) => {
   const pathname = usePathname();
+  const { cart } = useContext(CartStateContext);
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
     <div>
@@ -20,12 +25,12 @@ const ShopLayout = ({ children }) => {
             G2
           </Typography>
           <div className="flex justify-end items-center align-middle text-xl space-x-5">
-
             {/* Nav link */}
             {NAV_URL?.map((item, index) => (
               <a
-                className={`${pathname === item.url ? "underline" : ""
-                  } hover:font-bold`}
+                className={`${
+                  pathname === item.url ? "underline" : ""
+                } hover:font-bold`}
                 key={index}
                 href={item.url}
               >
@@ -34,8 +39,8 @@ const ShopLayout = ({ children }) => {
             ))}
 
             {/* Cart */}
-            <IconButton aria-label="cart">
-              <Badge badgeContent={4} color="secondary">
+            <IconButton aria-label="cart" onClick={() => setOpenDrawer(true)}>
+              <Badge badgeContent={cart ? cart?.length : "0"} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
@@ -44,7 +49,14 @@ const ShopLayout = ({ children }) => {
           </div>
         </Box>
       </Box>
-      <div className="w-full p-2 mt-14 h-full">{children}</div>
+      <div className="w-full p-2 mt-20 h-full">
+        <CustomDrawer
+          cart={cart}
+          openDrawer={openDrawer}
+          setOpenDrawer={setOpenDrawer}
+        />
+        {children}
+      </div>
     </div>
   );
 };

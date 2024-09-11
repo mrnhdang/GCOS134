@@ -1,27 +1,29 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Box,
   Grid,
   Typography,
-  Button,
   CardMedia,
   CardContent,
   CardActions,
   Card,
-  Paper,
   IconButton,
+  Modal,
 } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
 import axios from "axios";
+import CustomSnackbar from "@/generic/CustomSnackbar";
+import { CartStateContext } from "@/provider/CartContext";
 
 const ProductHomePage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
   const router = useRouter();
-
+  const { cart, setCart } = useContext(CartStateContext);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [listProduct, setListProduct] = useState([]);
 
   useEffect(() => {
@@ -31,15 +33,28 @@ const ProductHomePage = () => {
   const getListProduct = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/v1/product");
-      setListProduct(res.data);
+      setListProduct(res?.data);
     } catch (e) {
       console.log(e);
     }
   };
 
+  const handleOpenCartModal = (product) => {
+    setCart((prev) => [...prev, product]);
+    setOpenSnackbar(true);
+  };
+
   return (
     <div className="w-full h-full flex justify-center">
-      <Grid container spacing={2} sx={{ p: 2, width: "85%", height: "100%", backgroundColor: "white" }}>
+      <CustomSnackbar
+        openSnackbar={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
+      />
+      <Grid
+        container
+        spacing={2}
+        sx={{ p: 2, width: "85%", height: "100%", backgroundColor: "white" }}
+      >
         {listProduct?.map((product) => (
           <Grid item xs={6} sm={4} md={2} key={product.id}>
             <Card
@@ -79,9 +94,7 @@ const ProductHomePage = () => {
                 </IconButton>
                 <IconButton
                   size="small"
-                  onClick={() => {
-                    router.push(`/product/${product.id}`);
-                  }}
+                  onClick={() => handleOpenCartModal(product)}
                 >
                   <AddShoppingCartOutlinedIcon />
                 </IconButton>

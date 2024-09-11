@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { registerClient, loginClient } from "../../../client/client_api";
 
 const LoginPage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
@@ -51,7 +50,7 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-whiteGray relative ">
       <div className="flex flex-col justify-center p-3 bg-white rounded-xl shadow-NotificationItems w-1/4 h-3/5 ">
-      <div className="flex flex-col items-center text-black font-mono font-semibold text-[30px]">
+        <div className="flex flex-col items-center text-black font-mono font-semibold text-[30px]">
           LOGIN
         </div>
         <div className="flex flex-col items-center text-black text-[13px] mb-8">

@@ -2,33 +2,28 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { TextField, Button, Typography, Box } from "@mui/material";
-import {
-  fetchDetailProduct,
-  editProduct,
-  addProduct,
-} from "../../../../client/product_api";
 
 export default function AddProductForm() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
   const router = useRouter();
-  const handleAdd = async () => {
-    console.log(name);
-    console.log(price);
-    try {
-      const isAddSuccess = await addProduct(name, price);
-      if (isAddSuccess) {
-        alert("Add is Success");
-        router.push("/admin/product");
-      } else {
-        alert("Error Add ");
-      }
-      console.log({ isAddSuccess });
-    } catch (e) {
-      alert("Error API ");
-    }
-  };
+  // const handleAdd = async () => {
+  //   console.log(name);
+  //   console.log(price);
+  //   try {
+  //     const isAddSuccess = await addProduct(name, price);
+  //     if (isAddSuccess) {
+  //       alert("Add is Success");
+  //       router.push("/admin/product");
+  //     } else {
+  //       alert("Error Add ");
+  //     }
+  //     console.log({ isAddSuccess });
+  //   } catch (e) {
+  //     alert("Error API ");
+  //   }
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,9 +93,6 @@ export default function AddProductForm() {
           variant="contained"
           color="primary"
           className="w-full"
-          onClick={() => {
-            handleAdd();
-          }}
         >
           Save
         </Button>

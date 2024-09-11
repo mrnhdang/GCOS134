@@ -1,12 +1,7 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TextField, Button, Typography, Box } from "@mui/material";
-import {
-  fetchDetailProduct,
-  editProduct,
-  addProduct,
-} from "../../../../client/product_api";
 
 export default function ProductForm({ params }) {
   const [name, setName] = useState("");
@@ -15,22 +10,22 @@ export default function ProductForm({ params }) {
   const router = useRouter();
   const idParam = params.idproduct;
   const [productDetail, setProductDetail] = useState({});
-  
-  useEffect(() => {
-    getProductDetail();
-  }, []);
 
-  const getProductDetail = async () => {
-    try {
-      const productDetail = await fetchDetailProduct(idParam);
-      setProductDetail(productDetail);
-      setName(productDetail.productName);
-      setPrice(productDetail.price);
-      console.log({ productDetail });
-    } catch (e) {
-      alert("Please enter a username");
-    }
-  };
+  // useEffect(() => {
+  //   getProductDetail();
+  // }, []);
+
+  // const getProductDetail = async () => {
+  //   try {
+  //     const productDetail = await fetchDetailProduct(idParam);
+  //     setProductDetail(productDetail);
+  //     setName(productDetail.productName);
+  //     setPrice(productDetail.price);
+  //     console.log({ productDetail });
+  //   } catch (e) {
+  //     alert("Please enter a username");
+  //   }
+  // };
 
   const handleEdit = async () => {
     try {

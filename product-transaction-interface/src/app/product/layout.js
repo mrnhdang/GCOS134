@@ -1,6 +1,12 @@
 import ShopLayout from "@/components/shop/layout/ShopLayout";
 import "../globals.css";
 
+import CartProvider from "@/provider/CartContext";
+
 export default function ShopRootLayout({ children }) {
-  return <ShopLayout>{children}</ShopLayout>;
+  return (
+    <CartProvider>
+      <ShopLayout>{children}</ShopLayout>
+    </CartProvider>
+  );
 }
