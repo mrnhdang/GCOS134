@@ -18,7 +18,7 @@ const ShopLayout = ({ children }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
-    <div>
+    <div className="max-h-screen">
       <Box className="backdrop-blur-sm bg-white/30 p-2 scroll-smooth fixed w-screen z-50 top-0 font-mono">
         <Box className="container mx-auto flex justify-between items-center align-middle">
           <Typography variant="h4" fontFamily={"monospace"}>

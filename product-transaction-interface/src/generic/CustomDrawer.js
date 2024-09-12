@@ -6,8 +6,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { Avatar, Button, ListItemAvatar, ListItemText, TextField, Typography } from "@mui/material";
 import { CartStateContext } from "@/provider/CartContext";
+import { useRouter } from "next/navigation";
 
 export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
+  const router = useRouter();
   const { removeFromCart } = React.useContext(CartStateContext);
 
   const handleRemoveProductFromCart = (product, e) => {
@@ -50,7 +52,7 @@ export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
               <h1 className="text-gray-200 text-xl text-center">CART IS EMPTY</h1>
             }
           </List>
-          <Button variant="outlined" fullWidth>Check out</Button>
+          <Button variant="outlined" fullWidth onClick={() => router.push('/product/order')}>Check out</Button>
         </Box>
 
       </Drawer>
