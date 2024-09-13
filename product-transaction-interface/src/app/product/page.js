@@ -40,7 +40,7 @@ const ProductHomePage = () => {
   };
 
   const handleOpenCartModal = (product) => {
-    addToCart(product)
+    addToCart(product);
     setOpenSnackbar(true);
   };
 
@@ -53,14 +53,28 @@ const ProductHomePage = () => {
       <Grid
         container
         sx={{
-          p: 2, width: "85%", height: "100%", backgroundColor: "white", justifyContent: "space-between",
+          p: 2,
+          width: "85%",
+          height: "100%",
+          backgroundColor: "white",
+          justifyContent: "space-between",
           alignItems: "center",
         }}
       >
         {listProduct?.map((product) => (
-          <Grid sx={{
-            width: "100%", height: "100%", marginBottom: 1, flexShrink: "inherit"
-          }} item xs={6} sm={4} md={2} key={product.id}>
+          <Grid
+            sx={{
+              width: "100%",
+              height: "100%",
+              marginBottom: 1,
+              flexShrink: "inherit",
+            }}
+            item
+            xs={6}
+            sm={4}
+            md={2}
+            key={product.id}
+          >
             <Card
               sx={{
                 width: "200px",
@@ -70,10 +84,7 @@ const ProductHomePage = () => {
                 alignContent: "centers",
               }}
             >
-              <CardMedia
-                sx={{ height: "100%" }}
-                image={product?.image}
-              />
+              <CardMedia sx={{ height: "100%" }} image={product?.image} />
               <CardContent>
                 <Typography gutterBottom variant="a" component="div">
                   {product.productName || "testing"}
@@ -100,10 +111,9 @@ const ProductHomePage = () => {
               </CardActions>
             </Card>
           </Grid>
-        ))
-        }
-      </Grid >
-    </div >
+        ))}
+      </Grid>
+    </div>
   );
 };
 export default ProductHomePage;
