@@ -1,11 +1,7 @@
 import BillDetail from "@/components/shop/bill/BillDetail";
 
 const BillPage = () => {
-  return (
-    <>
-      <BillDetail />
-    </>
-  );
+  return <BillDetail />;
 };
 
 export default BillPage;

@@ -1,5 +1,6 @@
 "use client";
-import { Button, List, ListItem, ListItemText, Paper } from "@mui/material";
+import ProductTable from "@/generic/ProductTable";
+import { Button, Divider, Paper, TextField } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,8 @@ const BillDetail = () => {
       console.log(error);
     }
   };
+  console.log(bill);
+
   useEffect(() => {
     handleGetBillDetail();
   }, []);
@@ -26,29 +29,46 @@ const BillDetail = () => {
         <h1 className="self-start font-bold text-2xl text-gray-500 mb-2">
           Bill
         </h1>
-        <Paper sx={{ height: "100%", width: "100%" }}>
-          <h1>{bill?.id}</h1>
-          <h1>{bill?.payDate}</h1>
-          <h1>Order</h1>
-          <h1>Purchase date: {bill?.order?.purchaseDate}</h1>
-          {bill?.order?.products?.map((product) => {
-            return (
-              <List>
-                <ListItem secondaryAction={<h1>{product?.productName}</h1>}>
-                  Product:
-                </ListItem>
-                <ListItem secondaryAction={<h1>{product?.price}</h1>}>
-                  Product price:
-                </ListItem>
-              </List>
-            );
-          })}
-          <div className="flex items-stretch justify-between align-middle">
-            <h1>Total Price:</h1>
-            <h1>{bill?.totalPrice}</h1>
+        <Paper sx={{ height: "100%", width: "100%", p: 1 }}>
+          {/* User's information */}
+          <div className="p-1 m-1 flex flex-col space-y-2">
+            <div className="flex items-stretch justify-between align-middle">
+              <h1 className="font-bold">Bill ID: </h1>
+              <h1>{bill?.id}</h1>
+            </div>
+            <div className="flex items-stretch justify-between align-middle">
+              <h1 className="font-bold">Pay Date: </h1>
+              <h1>{bill?.payDate}</h1>
+            </div>
+            <div className="flex items-stretch justify-between align-middle">
+              <h1 className="font-bold">Buyer: </h1>
+              <h1>{bill?.user?.username}</h1>
+            </div>
+            <div className="flex items-stretch justify-between align-middle">
+              <h1 className="font-bold">Email: </h1>
+              <h1>{bill?.user?.email}</h1>
+            </div>
+          </div>
+
+          {/* Product */}
+          <Divider />
+          <div>
+            <ProductTable products={bill?.products} />
+          </div>
+          <Divider />
+
+          {/* Payment */}
+          <div className="flex items-stretch justify-between align-middle border border-solid border-white bg-gradient-to-tr from-white to to-slate-300 rounded-lg p-1 m-1">
+            <div className="w-full">
+              <TextField label="Enter money" variant="outlined" />
+            </div>
+            <h1 className="flex flex-col items-end text-blue-500">
+              Total:
+              <span className=" text-2xl font-bold">{bill?.totalPrice}</span>
+            </h1>
           </div>
         </Paper>
-        <Button>Pay</Button>
+        <Button fullWidth>Submit</Button>
       </div>
     </div>
   );

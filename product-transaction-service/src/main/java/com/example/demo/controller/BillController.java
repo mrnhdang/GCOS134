@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.BillGetDetailDto;
 import com.example.demo.dto.BillPaymentDto;
 import com.example.demo.entity.Bill;
 import com.example.demo.service.BillService;
@@ -24,8 +25,8 @@ public class BillController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Bill> getBillDetails(@PathVariable("id") String id) {
-        return ResponseEntity.ok(billService.getBillDetails(id));
+    public ResponseEntity<BillGetDetailDto> getBillDetails(@PathVariable("id") String id) {
+        return ResponseEntity.ok(billService.getBillDetail(id));
     }
 
     @PatchMapping("/payment/{id}")

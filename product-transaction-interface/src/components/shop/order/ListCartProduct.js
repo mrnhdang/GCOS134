@@ -1,6 +1,6 @@
 "use client";
 import { CartStateContext } from "@/provider/CartContext";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
 
@@ -20,14 +20,17 @@ const ListCartProduct = () => {
   const handlePlaceOrder = () => {
     router.push("/product/bill");
   };
-  const handleRemoveProductFromPayment = (product) => {
-    removeFromCart(product);
-    setTotalPrice(
-      cart.reduce((total, item) => {
-        return total + item.price * item.quantity;
-      }, 0)
-    );
-  };
+  const handleRemoveProductFromPayment = useCallback(
+    (product) => {
+      removeFromCart(product);
+      setTotalPrice(
+        cart.reduce((total, item) => {
+          return total + item.price * item.quantity;
+        }, 0)
+      );
+    },
+    [cart]
+  );
 
   useEffect(() => {
     setTotalPrice(
@@ -38,12 +41,12 @@ const ListCartProduct = () => {
   }, [cart]);
 
   return (
-    <div className="h-screen w-full flex flex-col items-center">
+    <div className="h-full w-full flex flex-col items-center p-2">
       <div className="w-3/5 flex flex-col items-center gap-1">
         <h1 className="self-start font-bold text-2xl text-gray-500 mb-2">
           ORDER
         </h1>
-        <div className="flex justify-center align-middle items-start border border-solid border-white w-full min-h-[500px] bg-gray-200 rounded-lg p-2 mb-1">
+        <div className="flex justify-center align-middle items-start border border-solid border-white w-full bg-gray-200 rounded-lg p-2 mb-1">
           <List
             sx={{
               width: "fit-content",
