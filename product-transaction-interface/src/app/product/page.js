@@ -11,6 +11,7 @@ import {
   Card,
   IconButton,
   Modal,
+  Tooltip,
 } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -102,12 +103,14 @@ const ProductHomePage = () => {
                 >
                   <VisibilityOutlinedIcon />
                 </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => handleOpenCartModal(product)}
-                >
-                  <AddShoppingCartOutlinedIcon />
-                </IconButton>
+                <Tooltip title="Add to cart">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleOpenCartModal(product)}
+                  >
+                    <AddShoppingCartOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
               </CardActions>
             </Card>
           </Grid>

@@ -17,8 +17,25 @@ const ListCartProduct = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const router = useRouter();
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     router.push("/product/bill");
+    const payload = {
+      userId: localStorage.getItem("id"),
+      products: cart?.map((product) => ({
+        productId: product?.id,
+        orderAmount: product?.quantity,
+        productName: product?.productName,
+        price: product?.price,
+      })),
+    };
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/api/v1/order",
+        payload
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleRemoveProductFromPayment = useCallback(
     (product) => {

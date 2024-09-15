@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,10 @@ public class Order {
 
     @DocumentReference
     private User user;
+
+    @DocumentReference
+    @Nullable
+    private Bill bill;
 
     @DocumentReference
     private List<Product> products;

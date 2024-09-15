@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 public class Bill {
     @Id
     private String id;
+    @Nullable
     private LocalDate payDate;
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal totalPrice;

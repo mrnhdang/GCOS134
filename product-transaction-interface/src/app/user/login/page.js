@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   OutlinedInput,
@@ -11,11 +11,13 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
+import { AuthStateContext } from "@/provider/AuthContext";
 
 const LoginPage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
   const router = useRouter();
-
+  const { auth, login } = useContext(AuthStateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -39,12 +41,14 @@ const LoginPage = () => {
       } else if (password === "") {
         alert("Please enter a password");
       }
-
-      const userLoginModel = await loginClient(username, password);
-      if (userLoginModel.loginIsDone) {
-        // router.push('/regsiter')
-      }
-    } catch (e) {}
+      const res = await axios.post("http://localhost:8080/api/v1/user/login", {
+        username,
+        password,
+      });
+      login(res?.data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (

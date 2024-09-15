@@ -1,10 +1,12 @@
 "use client";
-import { Badge, Box, IconButton, Typography } from "@mui/material";
+import { Badge, Box, Button, IconButton, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CustomDrawer from "@/generic/CustomDrawer";
 import { useContext, useEffect, useState } from "react";
 import { CartStateContext } from "@/provider/CartContext";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { AuthStateContext } from "@/provider/AuthContext";
 
 const NAV_URL = [
   { label: "Home", url: "/product" },
@@ -15,6 +17,7 @@ const NAV_URL = [
 const ShopLayout = ({ children }) => {
   const pathname = usePathname();
   const { cart } = useContext(CartStateContext);
+  const { logout } = useContext(AuthStateContext);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [clock, setClock] = useState();
 
@@ -77,6 +80,10 @@ const ShopLayout = ({ children }) => {
             </IconButton>
 
             {/* Avatar */}
+            <IconButton>
+              <AccountCircleOutlinedIcon />
+            </IconButton>
+            <Button onClick={() => logout()}>Logout</Button>
           </div>
         </Box>
       </Box>
