@@ -18,7 +18,7 @@ import java.util.List;
 public class CategoryController {
     private CategoryService categoryService;
 
-    @PostMapping("")
+    @GetMapping("")
     public ResponseEntity<List<Category>> getAllCategory() {
         return ResponseEntity.ok(categoryService.getAllCategory());
     }
