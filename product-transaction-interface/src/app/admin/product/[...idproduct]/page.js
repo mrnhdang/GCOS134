@@ -1,7 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TextField, Button, Typography, Box } from "@mui/material";
+import { TextField, Button, Typography, Box, CardMedia } from "@mui/material";
+import axios from "axios";
 
 export default function ProductForm({ params }) {
   const [name, setName] = useState("");
@@ -11,25 +12,29 @@ export default function ProductForm({ params }) {
   const idParam = params.idproduct;
   const [productDetail, setProductDetail] = useState({});
 
-  // useEffect(() => {
-  //   getProductDetail();
-  // }, []);
+  useEffect(() => {
+    getProductDetail();
+  }, []); 
 
-  // const getProductDetail = async () => {
-  //   try {
-  //     const productDetail = await fetchDetailProduct(idParam);
-  //     setProductDetail(productDetail);
-  //     setName(productDetail.productName);
-  //     setPrice(productDetail.price);
-  //     console.log({ productDetail });
-  //   } catch (e) {
-  //     alert("Please enter a username");
-  //   }
-  // };
+  const getProductDetail = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/v1/product/${idParam}`);
+      
+  
+      const productDetail = response.data;
+      setProductDetail(productDetail);
+      setName(productDetail.productName);
+      setPrice(productDetail.price);
+      setImage(productDetail.image);
+    } catch (e) {
+      alert("Please enter username !");
+      console.error(e);
+    }
+  };
 
   const handleEdit = async () => {
     try {
-      const isEditProduct = await editProduct(idParam, name, price);
+      const isEditProduct = await editProduct(idParam, name, price, image);
       if (isEditProduct) {
         alert("Edit is Success");
         router.push("/admin/product");
@@ -51,68 +56,91 @@ export default function ProductForm({ params }) {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f4f6f8',
+        padding: '2rem',
+      }}
+    >
       <Box
         component="form"
         onSubmit={handleSubmit}
-        className="flex flex-col items-center p-8 bg-white shadow-md rounded-lg"
+        sx={{
+          backgroundColor: '#fff',
+          padding: '2rem',
+          borderRadius: '8px',
+          boxShadow: '0px 0px 15px rgba(0,0,0,0.1)',
+          width: '100%',
+          maxWidth: '500px',
+        }}
       >
-        <Typography variant="h5" className="mb-6">
-          Edit product
+        <Typography variant="h4" align="center" gutterBottom>
+          Edit Product
         </Typography>
 
         <TextField
-          label="Name product"
+          label="Product Name"
           variant="outlined"
+          fullWidth
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mb-4 w-full"
+          sx={{ mb: 3 }}
         />
 
         <TextField
           label="Price"
           variant="outlined"
-          value={price}
+          fullWidth
           type="number"
+          value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="mb-4 w-full"
+          sx={{ mb: 3 }}
         />
 
-        <label htmlFor="image-upload" className="mb-4 w-full cursor-pointer">
-          <div className="flex items-center justify-center px-4 py-2 border-2 border-gray-300 border-dashed rounded-md">
-            {image ? (
-              <img
-                src={URL.createObjectURL(image)}
-                alt="Product"
-                className="max-w-full max-h-32 object-contain"
-              />
-            ) : (
-              <Typography variant="body2" color="textSecondary">
-                Upload file
-              </Typography>
-            )}
-          </div>
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-        </label>
+        <Box sx={{ mb: 3, textAlign: 'center' }}>
+          {image ? (
+            <CardMedia
+              component="img"
+              src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+              alt="Product Image"
+              sx={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: '300px',
+                objectFit: 'contain',
+                marginBottom: '16px',
+              }}
+            />
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No Image
+            </Typography>
+          )}
 
+          <Button variant="contained" component="label">
+            Upload
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handleImageChange}
+            />
+          </Button>
+        </Box>
         <Button
           type="submit"
           variant="contained"
           color="primary"
-          className="w-full"
-          onClick={() => {
-            handleEdit();
-          }}
+          fullWidth
+          sx={{ padding: '12px', fontSize: '16px' }}
         >
           Save
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 }

@@ -1,36 +1,45 @@
 "use client";
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { TextField, Button, Typography, Box } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { TextField, Button, Typography, Box, Paper } from "@mui/material";
+import axios from "axios";
 
 export default function AddProductForm() {
-  const [name, setName] = useState("");
+  const [productName, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
   const router = useRouter();
-  // const handleAdd = async () => {
-  //   console.log(name);
-  //   console.log(price);
-  //   try {
-  //     const isAddSuccess = await addProduct(name, price);
-  //     if (isAddSuccess) {
-  //       alert("Add is Success");
-  //       router.push("/admin/product");
-  //     } else {
-  //       alert("Error Add ");
-  //     }
-  //     console.log({ isAddSuccess });
-  //   } catch (e) {
-  //     alert("Error API ");
-  //   }
-  // };
+
+  const handleAddProduct = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("productName", productName);
+      formData.append("price", price);
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const res = await axios.post("http://localhost:8080/api/v1/product", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.status === 200) {
+        alert("Product added successfully");
+        router.push("/admin");
+      } else {
+        alert("Failed to add product");
+      }
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Error while adding product");
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Xử lý dữ liệu form ở đây
-    console.log("Name:", name);
-    console.log("Price:", price);
-    console.log("Image:", image);
+    handleAddProduct();
   };
 
   const handleImageChange = (e) => {
@@ -39,64 +48,79 @@ export default function AddProductForm() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center p-8 bg-white shadow-md rounded-lg"
-      >
-        <Typography variant="h5" className="mb-6">
-          Add product
+      <Paper elevation={3} sx={{ p: 4, width: "500px", backgroundColor: "#f9f9f9" }}>
+        <Typography variant="h4" gutterBottom sx={{ textAlign: "center", fontWeight: "bold", mb: 3 }}>
+          Add New Product
         </Typography>
 
-        <TextField
-          label="Name product"
-          variant="outlined"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="mb-4 w-full"
-        />
-
-        <TextField
-          label="Price"
-          variant="outlined"
-          value={price}
-          type="number"
-          onChange={(e) => setPrice(e.target.value)}
-          className="mb-4 w-full"
-        />
-
-        <label htmlFor="image-upload" className="mb-4 w-full cursor-pointer">
-          <div className="flex items-center justify-center px-4 py-2 border-2 border-gray-300 border-dashed rounded-md">
-            {image ? (
-              <img
-                src={URL.createObjectURL(image)}
-                alt="Product"
-                className="max-w-full max-h-32 object-contain"
-              />
-            ) : (
-              <Typography variant="body2" color="textSecondary">
-                Upload file
-              </Typography>
-            )}
-          </div>
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-        </label>
-
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          className="w-full"
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 3 }}
         >
-          Save
-        </Button>
-      </Box>
+          <TextField
+            label="Product Name"
+            variant="outlined"
+            value={productName}
+            onChange={(e) => setName(e.target.value)}
+            required
+            fullWidth
+          />
+
+          <TextField
+            label="Price"
+            variant="outlined"
+            value={price}
+            type="number"
+            onChange={(e) => setPrice(e.target.value)}
+            required
+            fullWidth
+          />
+
+          <label htmlFor="image-upload" className="w-full">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "2px dashed #ccc",
+                borderRadius: 2,
+                height: "150px",
+                cursor: "pointer",
+              }}
+            >
+              {image ? (
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Product"
+                  style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                />
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  Upload Image
+                </Typography>
+              )}
+            </Box>
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
+          </label>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ paddingY: 1.5, fontWeight: "bold" }}
+          >
+            Save
+          </Button>
+        </Box>
+      </Paper>
     </div>
   );
 }
