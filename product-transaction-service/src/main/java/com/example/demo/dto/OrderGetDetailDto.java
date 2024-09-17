@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.Bill;
 import com.example.demo.entity.OrderStatus;
 import com.example.demo.entity.User;
 import lombok.*;
@@ -16,6 +17,7 @@ public class OrderGetDetailDto {
     private String id;
     private LocalDate purchaseDate;
     private OrderStatus status;
+    private String billId;
     private User user;
     private List<OrderProductDto> products;
 }

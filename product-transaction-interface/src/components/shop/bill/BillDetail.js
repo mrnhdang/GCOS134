@@ -1,44 +1,103 @@
 "use client";
 import ProductTable from "@/generic/ProductTable";
-import { Button, Divider, Paper, TextField } from "@mui/material";
+import { formatDate } from "@/util";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Divider,
+  Paper,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const BillDetail = () => {
+const BillDetail = ({ billId }) => {
+  const router = useRouter();
   const [bill, setBill] = useState();
+  const [uiState, setUiState] = useState();
+  const [payment, setPayment] = useState(0);
 
   const handleGetBillDetail = async () => {
+    setUiState({ loading: true });
     try {
       const res = await axios.get(
-        "http://localhost:8080/api/v1/bill/66dd0a22bab5e49522968cbe"
+        `http://localhost:8080/api/v1/bill/${billId}`
       );
-      console.log(res?.data);
       setBill(res?.data);
+      setUiState({ loading: false });
     } catch (error) {
-      console.log(error);
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
     }
   };
-  console.log(bill);
 
+  const handleSubmitPayment = async () => {
+    setUiState({ loading: true });
+    try {
+      const payload = {
+        userId: localStorage.getItem("id"),
+        payPrice: payment,
+      };
+
+      await axios.patch(
+        `http://localhost:8080/api/v1/bill/payment/${billId}`,
+        payload
+      );
+
+      setUiState({ loading: false, success: "Transaction successfully!!!" });
+      router.push("/product/success");
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
   useEffect(() => {
     handleGetBillDetail();
   }, []);
+  console.log(uiState);
+
   return (
-    <div className="flex flex-col justify-start align-middle items-center h-screen">
-      <div className="w-3/5 flex flex-col items-center gap-1">
-        <h1 className="self-start font-bold text-2xl text-gray-500 mb-2">
-          Bill
-        </h1>
-        <Paper sx={{ height: "100%", width: "100%", p: 1 }}>
+    <div className="flex flex-col justify-start align-middle items-center h-full min-h-screen">
+      {uiState?.success && (
+        <Alert color="success" severity="success">
+          {uiState?.success}
+        </Alert>
+      )}
+      {uiState?.error && (
+        <Alert color="error" severity="error">
+          {uiState?.error}
+        </Alert>
+      )}
+
+      <div className="w-3/5 flex flex-col items-center gap-2">
+        <Paper
+          sx={{ height: "100%", width: "100%", p: 2 }}
+          className="bg-gradient-to-tr from-slate-200 to to-slate-300"
+        >
+          <h1 className="self-start font-bold text-2xl text-black mb-2">
+            Bill
+          </h1>
           {/* User's information */}
-          <div className="p-1 m-1 flex flex-col space-y-2">
+          <div className="p-1 mb-10 flex flex-col space-y-2">
             <div className="flex items-stretch justify-between align-middle">
               <h1 className="font-bold">Bill ID: </h1>
               <h1>{bill?.id}</h1>
             </div>
             <div className="flex items-stretch justify-between align-middle">
               <h1 className="font-bold">Pay Date: </h1>
-              <h1>{bill?.payDate}</h1>
+              <h1>
+                {bill?.payDate
+                  ? `${bill?.payDate[2]}/${bill?.payDate[1]}/${bill?.payDate[0]}`
+                  : "Not paid yet"}
+              </h1>
             </div>
             <div className="flex items-stretch justify-between align-middle">
               <h1 className="font-bold">Buyer: </h1>
@@ -52,15 +111,23 @@ const BillDetail = () => {
 
           {/* Product */}
           <Divider />
-          <div>
-            <ProductTable products={bill?.products} />
+          <div className="my-10 flex justify-center">
+            {!uiState?.loading ? (
+              <ProductTable products={bill?.products} />
+            ) : (
+              <CircularProgress />
+            )}
           </div>
           <Divider />
 
           {/* Payment */}
-          <div className="flex items-stretch justify-between align-middle border border-solid border-white bg-gradient-to-tr from-white to to-slate-300 rounded-lg p-1 m-1">
+          <div className="flex items-stretch justify-between align-middle p-1 my-10">
             <div className="w-full">
-              <TextField label="Enter money" variant="outlined" />
+              <TextField
+                label="Enter money"
+                variant="outlined"
+                onChange={(e) => setPayment(e.target.value)}
+              />
             </div>
             <h1 className="flex flex-col items-end text-blue-500">
               Total:
@@ -68,7 +135,13 @@ const BillDetail = () => {
             </h1>
           </div>
         </Paper>
-        <Button fullWidth>Submit</Button>
+        <Button
+          variant="outlined"
+          onClick={() => handleSubmitPayment()}
+          fullWidth
+        >
+          Submit Payment
+        </Button>
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 "use client";
 import { CartStateContext } from "@/provider/CartContext";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const {
   List,
@@ -10,60 +11,54 @@ const {
   ListItemText,
   IconButton,
   Button,
+  Paper,
 } = require("@mui/material");
 
 const ListCartProduct = () => {
   const { cart, removeFromCart } = useContext(CartStateContext);
-  const [totalPrice, setTotalPrice] = useState(0);
   const router = useRouter();
 
   const handlePlaceOrder = async () => {
-    router.push("/product/bill");
-    const payload = {
-      userId: localStorage.getItem("id"),
-      products: cart?.map((product) => ({
-        productId: product?.id,
-        orderAmount: product?.quantity,
-        productName: product?.productName,
-        price: product?.price,
-      })),
-    };
     try {
+      const payload = {
+        userId: localStorage.getItem("id"),
+        products: cart?.map((product) => ({
+          productId: product?.id,
+          orderAmount: product?.quantity,
+          productName: product?.productName,
+          price: product?.price,
+        })),
+      };
       const res = await axios.post(
         "http://localhost:8080/api/v1/order",
         payload
       );
+      router.push(`/product/order/${res?.data?.id}`);
     } catch (error) {
       console.log(error);
     }
   };
+
   const handleRemoveProductFromPayment = useCallback(
     (product) => {
       removeFromCart(product);
-      setTotalPrice(
-        cart.reduce((total, item) => {
-          return total + item.price * item.quantity;
-        }, 0)
-      );
     },
     [cart]
   );
 
-  useEffect(() => {
-    setTotalPrice(
+  const totalPrice = useMemo(
+    () =>
       cart?.reduce((total, item) => {
         return total + item.price * item.quantity;
-      }, 0)
-    );
-  }, [cart]);
+      }, 0),
+    [cart]
+  );
 
   return (
-    <div className="h-full w-full flex flex-col items-center p-2">
+    <div className="h-full w-full flex flex-col items-center p-2 min-h-screen">
       <div className="w-3/5 flex flex-col items-center gap-1">
-        <h1 className="self-start font-bold text-2xl text-gray-500 mb-2">
-          ORDER
-        </h1>
-        <div className="flex justify-center align-middle items-start border border-solid border-white w-full bg-gray-200 rounded-lg p-2 mb-1">
+        <div className="flex flex-col justify-center align-middle items-center border border-solid border-white w-full bg-gray-200 rounded-lg p-4 mb-1">
+          <h1 className="self-start font-bold text-2xl mb-2">CART</h1>
           <List
             sx={{
               width: "fit-content",
@@ -76,8 +71,10 @@ const ListCartProduct = () => {
           >
             {cart?.map((product, index) => (
               <ListItem
-                className="flex justify-center align-middle items-center space-x-2 w-fit border border-solid border-white bg-white rounded-lg "
+                className="flex justify-center align-middle items-center space-x-2 w-fit border border-solid border-white bg-white rounded-lg shadow-xl mb-1 hover:scale-105 duration-200"
                 key={index}
+                components={Paper}
+                elevation={3}
                 secondaryAction={
                   <IconButton
                     edge="end"
@@ -99,13 +96,20 @@ const ListCartProduct = () => {
                 </p>
               </ListItem>
             ))}
-            <h1 className="font-bold text-xl bg-pink-400 w-fit p-2 rounded-lg text-white self-end">
-              Total: <span>{totalPrice}</span>
+            <h1 className="flex flex-col items-end self-end text-blue-500 border border-solid border-white p-2 rounded-lg">
+              Total:
+              <span className=" text-2xl font-bold">{totalPrice}</span>
             </h1>
           </List>
         </div>
 
-        <Button variant="outlined" fullWidth onClick={() => handlePlaceOrder()}>
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={() => {
+            handlePlaceOrder();
+          }}
+        >
           Place Order
         </Button>
       </div>

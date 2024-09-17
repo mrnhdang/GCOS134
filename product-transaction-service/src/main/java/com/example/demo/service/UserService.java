@@ -31,6 +31,7 @@ public class UserService {
                 .password(dto.getPassword())
                 .email(dto.getEmail())
                 .role(dto.getRole())
+                .balance(dto.getBalance())
                 .build();
         return userRepository.save(user);
     }

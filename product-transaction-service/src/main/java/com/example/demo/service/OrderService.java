@@ -48,6 +48,7 @@ public class OrderService {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .orderAmount(orderDetail.getTotalAmount())
+                    .image(product.getImage())
                     .build();
             orderProductDtos.add(dto);
         });
@@ -57,6 +58,7 @@ public class OrderService {
                 .purchaseDate(orderDetails.getPurchaseDate())
                 .user(orderDetails.getUser())
                 .products(orderProductDtos)
+                .billId(orderDetails.getBill().getId())
                 .build();
     }
 

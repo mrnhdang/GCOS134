@@ -30,7 +30,6 @@ public class Order {
     private User user;
 
     @DocumentReference
-    @Nullable
     private Bill bill;
 
     @DocumentReference

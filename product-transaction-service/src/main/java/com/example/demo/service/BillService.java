@@ -11,9 +11,11 @@ import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.BillRepository;
 import com.example.demo.repository.OrderDetailRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class BillService {
     private BillRepository billRepository;
     private UserService userService;
     private OrderDetailRepository orderDetailRepository;
+    private UserRepository userRepository;
 
     public List<Bill> getAllBill() {
         return billRepository.findAll();
@@ -74,6 +77,9 @@ public class BillService {
         }
         bill.setPayDate(LocalDate.now());
         bill.setStatus(BillStatus.PAID);
+        BigDecimal updateBalance = user.getBalance().subtract(dto.payPrice());
+        user.setBalance(updateBalance);
+        userRepository.save(user);
         billRepository.save(bill);
     }
 
