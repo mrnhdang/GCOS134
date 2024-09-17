@@ -1,20 +1,36 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { TextField, Button, Typography, Box, Paper } from "@mui/material";
+import { TextField, Button, Typography, Box, Paper, Autocomplete } from "@mui/material";
 import axios from "axios";
 
 export default function AddProductForm() {
   const [productName, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
+  const [category, setCategory] = useState([]); 
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/v1/category");
+      setCategory(response.data); 
+    } catch (e) {
+      console.error("Error fetching category", e);
+    }
+  };
 
   const handleAddProduct = async () => {
     try {
       const formData = new FormData();
       formData.append("productName", productName);
       formData.append("price", price);
+      formData.append("category", selectedCategory?.id);
       if (image) {
         formData.append("image", image);
       }
@@ -75,6 +91,16 @@ export default function AddProductForm() {
             onChange={(e) => setPrice(e.target.value)}
             required
             fullWidth
+          />
+
+         <Autocomplete
+            options={category}
+            getOptionLabel={(option) => option.name} 
+            value={selectedCategory}
+            onChange={(event, newValue) => setSelectedCategory(newValue)} 
+            renderInput={(params) => <TextField {...params} label="Category" required />}
+            fullWidth
+            sx={{ mb: 3 }}
           />
 
           <label htmlFor="image-upload" className="w-full">

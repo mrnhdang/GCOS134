@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TextField, Button, Typography, Box, CardMedia } from "@mui/material";
+import { TextField, Button, Typography, Box, CardMedia, Autocomplete } from "@mui/material";
 import axios from "axios";
 
 export default function ProductForm({ params }) {
@@ -11,31 +11,57 @@ export default function ProductForm({ params }) {
   const router = useRouter();
   const idParam = params.idproduct;
   const [productDetail, setProductDetail] = useState({});
+  const [categories, setCategories] = useState([]); 
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  
 
   useEffect(() => {
     getProductDetail();
+    fetchCategories();
   }, []); 
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/v1/category");
+      setCategories(response.data); 
+    } catch (e) {
+      console.error("Error fetching categories", e);
+    }
+  };
 
   const getProductDetail = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/api/v1/product/${idParam}`);
       
   
-      const productDetail = response.data;
+      const productDetail = response?.data; 
       setProductDetail(productDetail);
       setName(productDetail.productName);
       setPrice(productDetail.price);
       setImage(productDetail.image);
+      setSelectedCategory(productDetail.category); 
     } catch (e) {
-      alert("Please enter username !");
+      alert("Failed to load product details");
       console.error(e);
     }
   };
 
   const handleEdit = async () => {
     try {
-      const isEditProduct = await editProduct(idParam, name, price, image);
-      if (isEditProduct) {
+      const formData = new FormData();
+      formData.append("productName", name);
+      formData.append("price", price);
+      formData.append("category", selectedCategory?.idParam); 
+      if (image && typeof image !== "string") {
+        formData.append("image", image); 
+      }
+
+      const res = await axios.put(`http://localhost:8080/api/v1/product/${idParam}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.status === 200) {
         alert("Edit is Success");
         router.push("/admin/product");
       } else {
@@ -101,6 +127,15 @@ export default function ProductForm({ params }) {
           sx={{ mb: 3 }}
         />
 
+        <Autocomplete
+          options={categories}
+          getOptionLabel={(option) => option.name}
+          value={selectedCategory}
+          onChange={(event, newValue) => setSelectedCategory(newValue)}
+          renderInput={(params) => <TextField {...params} label="Category" required />}
+          fullWidth
+          sx={{ mb: 3 }}
+        />
         <Box sx={{ mb: 3, textAlign: 'center' }}>
           {image ? (
             <CardMedia
@@ -122,7 +157,7 @@ export default function ProductForm({ params }) {
           )}
 
           <Button variant="contained" component="label">
-            Upload
+            Upload Image
             <input
               type="file"
               accept="image/*"
@@ -136,7 +171,7 @@ export default function ProductForm({ params }) {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ padding: '12px', fontSize: '16px' }}
+          sx={{ paddingY: 1.5, fontWeight: "bold" }}
         >
           Save
         </Button>
