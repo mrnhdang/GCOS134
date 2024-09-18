@@ -12,6 +12,7 @@ import {
   IconButton,
   Modal,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -23,9 +24,10 @@ import { CartStateContext } from "@/provider/CartContext";
 const ProductHomePage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
   const router = useRouter();
-  const { cart, addToCart } = useContext(CartStateContext);
+  const { addToCart } = useContext(CartStateContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [listProduct, setListProduct] = useState([]);
+  const [uiState, setUiState] = useState();
 
   useEffect(() => {
     getListProduct();
@@ -33,10 +35,16 @@ const ProductHomePage = () => {
 
   const getListProduct = async () => {
     try {
+      setUiState({ loading: true });
       const res = await axios.get("http://localhost:8080/api/v1/product");
       setListProduct(res?.data);
-    } catch (e) {
-      console.log(e);
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
     }
   };
 
@@ -46,76 +54,90 @@ const ProductHomePage = () => {
   };
 
   return (
-    <div className="w-full h-full flex justify-center">
+    <div className="w-full h-full min-h-screen flex justify-center">
+      {uiState?.success && (
+        <Alert color="success" severity="success">
+          {uiState?.success}
+        </Alert>
+      )}
+      {uiState?.error && (
+        <Alert color="error" severity="error">
+          {uiState?.error}
+        </Alert>
+      )}
       <CustomSnackbar
         openSnackbar={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
-      <Grid
-        container
-        sx={{
-          p: 2,
-          width: "85%",
-          height: "100%",
-          backgroundColor: "white",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {listProduct?.map((product) => (
-          <Grid
-            sx={{
-              width: "100%",
-              height: "100%",
-              marginBottom: 1,
-              flexShrink: "inherit",
-            }}
-            item
-            xs={6}
-            sm={4}
-            md={2}
-            key={product.id}
-          >
-            <Card
+      {!uiState?.loading ? (
+        <Grid
+          container
+          sx={{
+            p: 2,
+            width: "85%",
+            height: "100%",
+            backgroundColor: "white",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {listProduct?.map((product) => (
+            <Grid
               sx={{
-                width: "200px",
-                height: "350px",
-                display: "flex",
-                flexDirection: "column",
-                alignContent: "centers",
+                width: "100%",
+                height: "100%",
+                marginBottom: 1,
+                flexShrink: "inherit",
               }}
+              item
+              xs={6}
+              sm={4}
+              md={2}
+              key={product.id}
             >
-              <CardMedia sx={{ height: "100%" }} image={product?.image} />
-              <CardContent>
-                <Typography gutterBottom variant="a" component="div">
-                  {product.productName || "testing"}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {product.price || 1000000} VND
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    router.push(`/product/${product.id}`);
-                  }}
-                >
-                  <VisibilityOutlinedIcon />
-                </IconButton>
-                <Tooltip title="Add to cart">
+              <Card
+                sx={{
+                  width: "200px",
+                  height: "350px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignContent: "centers",
+                }}
+              >
+                <CardMedia sx={{ height: "100%" }} image={product?.image} />
+                <CardContent>
+                  <Typography gutterBottom variant="a" component="div">
+                    {product.productName || "testing"}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {product.price || 1000000} VND
+                  </Typography>
+                </CardContent>
+                <CardActions>
                   <IconButton
                     size="small"
-                    onClick={() => handleOpenCartModal(product)}
+                    onClick={() => {
+                      router.push(`/product/${product.id}`);
+                    }}
                   >
-                    <AddShoppingCartOutlinedIcon />
+                    <VisibilityOutlinedIcon />
                   </IconButton>
-                </Tooltip>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                  <Tooltip title="Add to cart">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenCartModal(product)}
+                    >
+                      <AddShoppingCartOutlinedIcon />
+                    </IconButton>
+                  </Tooltip>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <CircularProgress />
+      )}
     </div>
   );
 };
