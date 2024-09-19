@@ -1,23 +1,27 @@
 "use client";
 import ProductTable from "@/generic/ProductTable";
-import { formatDate } from "@/util";
+import { CartStateContext } from "@/provider/CartContext";
+import { formatMilliseconds } from "@/util";
 import {
   Alert,
   Button,
   CircularProgress,
   Divider,
+  Fab,
   Paper,
   TextField,
 } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const BillDetail = ({ billId }) => {
   const router = useRouter();
+  const { setCart } = useContext(CartStateContext);
   const [bill, setBill] = useState();
   const [uiState, setUiState] = useState();
   const [payment, setPayment] = useState(0);
+  const [countdown, setCountdown] = useState(20);
 
   const handleGetBillDetail = async () => {
     setUiState({ loading: true });
@@ -26,6 +30,22 @@ const BillDetail = ({ billId }) => {
         `http://localhost:8080/api/v1/bill/${billId}`
       );
       setBill(res?.data);
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
+
+  const handleRemovePurchaseOrder = async () => {
+    setUiState({ loading: true });
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/v1/order/delete/${bill?.orderId}`
+      );
       setUiState({ loading: false });
     } catch (error) {
       const message = error?.response?.data?.message;
@@ -50,6 +70,7 @@ const BillDetail = ({ billId }) => {
       );
 
       setUiState({ loading: false, success: "Transaction successfully!!!" });
+      setCart([]);
       router.push("/product/success");
     } catch (error) {
       const message = error?.response?.data?.message;
@@ -59,13 +80,35 @@ const BillDetail = ({ billId }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (countdown > 0) {
+      setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    } else {
+      handleRemovePurchaseOrder();
+      router.push("/product");
+    }
+  }, [countdown]);
+
   useEffect(() => {
     handleGetBillDetail();
   }, []);
-  console.log(uiState);
 
   return (
     <div className="flex flex-col justify-start align-middle items-center h-full min-h-screen">
+      <Fab
+        sx={{
+          position: "fixed",
+          bottom: 20,
+          right: 20,
+        }}
+        className="font-bold text-2xl text-center text-white bg-gradient-to-tr from-gray-300 to-gray-400 hover:duration-1000 transition duration-200 ease-in-out hover:scale-105 "
+        variant="extended"
+      >
+        {formatMilliseconds(countdown * 1000)}
+      </Fab>
       {uiState?.success && (
         <Alert color="success" severity="success">
           {uiState?.success}
@@ -123,6 +166,7 @@ const BillDetail = ({ billId }) => {
           {/* Payment */}
           <div className="flex items-stretch justify-between align-middle p-1 my-10">
             <div className="w-full">
+              <h1 className="text-gray-400">Your balance: {bill?.user?.balance}</h1>
               <TextField
                 label="Enter money"
                 variant="outlined"
@@ -131,7 +175,7 @@ const BillDetail = ({ billId }) => {
             </div>
             <h1 className="flex flex-col items-end text-blue-500">
               Total:
-              <span className=" text-2xl font-bold">{bill?.totalPrice}</span>
+              <span className="text-2xl font-bold">{bill?.totalPrice}</span>
             </h1>
           </div>
         </Paper>
