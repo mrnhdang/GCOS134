@@ -58,7 +58,7 @@ public class OrderService {
                 .purchaseDate(orderDetails.getPurchaseDate())
                 .user(orderDetails.getUser())
                 .products(orderProductDtos)
-                .billId(orderDetails.getBill().getId())
+                .billId(orderDetails.getBill() != null ? orderDetails.getBill().getId() : null)
                 .build();
     }
 

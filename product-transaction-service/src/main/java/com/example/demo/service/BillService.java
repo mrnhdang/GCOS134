@@ -53,6 +53,7 @@ public class BillService {
         });
 
         return BillGetDetailDto.builder()
+                .orderId(bill.getOrder().getId())
                 .products(orderProductDtos).id(bill.getId())
                 .payDate(bill.getPayDate())
                 .status(bill.getStatus())
