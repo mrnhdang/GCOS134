@@ -32,8 +32,36 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
     }
 
-    public List<Order> getAllOrder() {
-        return orderRepository.findAll();
+    public List<OrderProductDto> mapToProductDto(List<Product> products, String orderId){
+        List<OrderProductDto> orderProductDtos = new ArrayList<>();
+
+        products.forEach(product -> {
+            OrderDetail orderDetail = orderDetailRepository.findByProductAndOrder(product.getId(), orderId);
+            OrderProductDto dto = OrderProductDto.builder()
+                    .productId(product.getId())
+                    .productName(product.getProductName())
+                    .price(product.getPrice())
+                    .orderAmount(orderDetail.getTotalAmount())
+                    .image(product.getImage())
+                    .build();
+            orderProductDtos.add(dto);
+        });
+        return orderProductDtos;
+    }
+
+    public List<OrderGetDetailDto> getAllOrder() {
+        List<Order> orders = orderRepository.findAll();
+        List<OrderGetDetailDto> orderGetDetailDtos = orders.stream().map((order) -> {
+            OrderGetDetailDto orderGetDetailDto = OrderGetDetailDto.builder()
+                    .billId(order.getBill().getId())
+                    .id(order.getId())
+                    .products(mapToProductDto(order.getProducts(), order.getId()))
+                    .user(order.getUser())
+                    .status(order.getStatus())
+                    .build();
+            return orderGetDetailDto;
+        }).toList();
+        return orderGetDetailDtos;
     }
 
     public OrderGetDetailDto getOrderDetails(String orderId) {
