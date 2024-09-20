@@ -20,7 +20,7 @@ public class BillController {
     private BillService billService;
 
     @GetMapping("")
-    public ResponseEntity<List<Bill>> getAllBill() {
+    public ResponseEntity<List<BillGetDetailDto>> getAllBill() {
         return ResponseEntity.ok(billService.getAllBill());
     }
 

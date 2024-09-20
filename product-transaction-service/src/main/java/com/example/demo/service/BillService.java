@@ -27,9 +27,20 @@ public class BillService {
     private UserService userService;
     private OrderDetailRepository orderDetailRepository;
     private UserRepository userRepository;
+    private OrderService orderService;
 
-    public List<Bill> getAllBill() {
-        return billRepository.findAll();
+    public List<BillGetDetailDto> getAllBill() {
+        List<Bill> bills = billRepository.findAll();
+        List<BillGetDetailDto> billGetDetailDtos = bills.stream().map(bill -> BillGetDetailDto.builder()
+                .id(bill.getId())
+                .user(bill.getOrder().getUser())
+                .orderId(bill.getOrder().getId())
+                .payDate(bill.getPayDate())
+                .status(bill.getStatus())
+                .totalPrice(bill.getTotalPrice())
+                .build()).toList();
+
+        return billGetDetailDtos;
     }
 
     public Bill checkExistBill(String id) {
@@ -54,7 +65,8 @@ public class BillService {
 
         return BillGetDetailDto.builder()
                 .orderId(bill.getOrder().getId())
-                .products(orderProductDtos).id(bill.getId())
+                .products(orderProductDtos)
+                .id(bill.getId())
                 .payDate(bill.getPayDate())
                 .status(bill.getStatus())
                 .user(bill.getOrder().getUser())

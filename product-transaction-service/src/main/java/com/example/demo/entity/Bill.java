@@ -28,7 +28,7 @@ public class Bill {
     private BigDecimal totalPrice;
     private BillStatus status;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private Order order;
 
 }
