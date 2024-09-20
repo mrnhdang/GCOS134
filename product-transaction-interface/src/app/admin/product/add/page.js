@@ -8,19 +8,20 @@ export default function AddProductForm() {
   const [productName, setName] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
+  const [category, setCategory] = useState([]); 
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const router = useRouter();
-  const [categoryList, setCategoryList] = useState([]);
 
   useEffect(() => {
-    getCategoryList();
+    fetchCategory();
   }, []);
 
-  const getCategoryList = async () => {
+  const fetchCategory = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/v1/category");
-      setCategoryList(res?.data);
+      const response = await axios.get("http://localhost:8080/api/v1/category");
+      setCategory(response.data); 
     } catch (e) {
-      console.error("Error fetching category data:", e);
+      console.error("Error fetching category", e);
     }
   };
 
@@ -29,7 +30,7 @@ export default function AddProductForm() {
       const formData = new FormData();
       formData.append("productName", productName);
       formData.append("price", price);
-      formData.append("category", categoryList?.categoryName);
+      formData.append("category", selectedCategory?.id);
       if (image) {
         formData.append("image", image);
       }
@@ -92,12 +93,14 @@ export default function AddProductForm() {
             fullWidth
           />
 
-          <Autocomplete
-            options={categoryList}
-            getOptionLabel={(option) => option.name || ""}
-            value={categoryList?.id}
-            onChange={(even, newValue) => setSelectedCategory(newValue)}
-            renderInput={(params) => <TextField {...params} label="Select Category" />}
+         <Autocomplete
+            options={category}
+            getOptionLabel={(option) => option.name} 
+            value={selectedCategory}
+            onChange={(event, newValue) => setSelectedCategory(newValue)} 
+            renderInput={(params) => <TextField {...params} label="Category" required />}
+            fullWidth
+            sx={{ mb: 3 }}
           />
 
           <label htmlFor="image-upload" className="w-full">
