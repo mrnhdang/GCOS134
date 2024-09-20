@@ -31,7 +31,8 @@ public class BillService {
 
     public List<BillGetDetailDto> getAllBill() {
         List<Bill> bills = billRepository.findAll();
-        List<BillGetDetailDto> billGetDetailDtos = bills.stream().map(bill -> BillGetDetailDto.builder()
+
+        return bills.stream().map(bill -> BillGetDetailDto.builder()
                 .id(bill.getId())
                 .user(bill.getOrder().getUser())
                 .orderId(bill.getOrder().getId())
@@ -39,8 +40,6 @@ public class BillService {
                 .status(bill.getStatus())
                 .totalPrice(bill.getTotalPrice())
                 .build()).toList();
-
-        return billGetDetailDtos;
     }
 
     public Bill checkExistBill(String id) {

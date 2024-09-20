@@ -51,17 +51,12 @@ public class OrderService {
 
     public List<OrderGetDetailDto> getAllOrder() {
         List<Order> orders = orderRepository.findAll();
-        List<OrderGetDetailDto> orderGetDetailDtos = orders.stream().map((order) -> {
-            OrderGetDetailDto orderGetDetailDto = OrderGetDetailDto.builder()
-                    .billId(order.getBill().getId())
-                    .id(order.getId())
-                    .products(mapToProductDto(order.getProducts(), order.getId()))
-                    .user(order.getUser())
-                    .status(order.getStatus())
-                    .build();
-            return orderGetDetailDto;
-        }).toList();
-        return orderGetDetailDtos;
+        return orders.stream().map((order) -> OrderGetDetailDto.builder()
+                .billId(order.getBill().getId())
+                .id(order.getId())
+                .user(order.getUser())
+                .status(order.getStatus())
+                .build()).toList();
     }
 
     public OrderGetDetailDto getOrderDetails(String orderId) {
