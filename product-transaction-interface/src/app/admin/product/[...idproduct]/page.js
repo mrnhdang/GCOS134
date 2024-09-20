@@ -1,7 +1,14 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TextField, Button, Typography, Box, CardMedia } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  CardMedia,
+  Autocomplete,
+} from "@mui/material";
 import axios from "axios";
 
 export default function ProductForm({ params }) {
@@ -11,16 +18,21 @@ export default function ProductForm({ params }) {
   const router = useRouter();
   const idParam = params.idproduct;
   const [productDetail, setProductDetail] = useState({});
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("id");
+  const [categoryList, setCategoryList] = useState([]);
 
   useEffect(() => {
     getProductDetail();
-  }, []); 
+    getCategoryList();
+  }, []);
 
   const getProductDetail = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/product/${idParam}`);
-      
-  
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/product/${idParam}`
+      );
+
       const productDetail = response.data;
       setProductDetail(productDetail);
       setName(productDetail.productName);
@@ -32,9 +44,20 @@ export default function ProductForm({ params }) {
     }
   };
 
+  const getCategoryList = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/v1/category");
+      setCategoryList(res?.data);
+    } catch (e) {
+      console.error("Error fetching category data:", e);
+    }
+  };
+
   const handleEdit = async () => {
     try {
-      const isEditProduct = await editProduct(idParam, name, price, image);
+      const isEditProduct = await axios.put(
+        `http://localhost:8080/api/v1/product/${idParam}`
+      );
       if (isEditProduct) {
         alert("Edit is Success");
         router.push("/admin/product");
@@ -58,24 +81,24 @@ export default function ProductForm({ params }) {
   return (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f4f6f8',
-        padding: '2rem',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f4f6f8",
+        padding: "2rem",
       }}
     >
       <Box
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          backgroundColor: '#fff',
-          padding: '2rem',
-          borderRadius: '8px',
-          boxShadow: '0px 0px 15px rgba(0,0,0,0.1)',
-          width: '100%',
-          maxWidth: '500px',
+          backgroundColor: "#fff",
+          padding: "2rem",
+          borderRadius: "8px",
+          boxShadow: "0px 0px 15px rgba(0,0,0,0.1)",
+          width: "100%",
+          maxWidth: "500px",
         }}
       >
         <Typography variant="h4" align="center" gutterBottom>
@@ -101,18 +124,28 @@ export default function ProductForm({ params }) {
           sx={{ mb: 3 }}
         />
 
-        <Box sx={{ mb: 3, textAlign: 'center' }}>
+        <Autocomplete
+          options={categoryList}
+          // onChange={( event, newValue) => setSelectedCategory(newValue)}
+          renderInput={(params) => (
+            <TextField {...params} label="Select Category" />
+          )}
+        />
+
+        <Box sx={{ mb: 3, textAlign: "center" }}>
           {image ? (
             <CardMedia
               component="img"
-              src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+              src={
+                typeof image === "string" ? image : URL.createObjectURL(image)
+              }
               alt="Product Image"
               sx={{
-                width: '100%',
-                height: 'auto',
-                maxHeight: '300px',
-                objectFit: 'contain',
-                marginBottom: '16px',
+                width: "100%",
+                height: "auto",
+                maxHeight: "300px",
+                objectFit: "contain",
+                marginBottom: "16px",
               }}
             />
           ) : (
@@ -136,7 +169,7 @@ export default function ProductForm({ params }) {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ padding: '12px', fontSize: '16px' }}
+          sx={{ padding: "12px", fontSize: "16px" }}
         >
           Save
         </Button>
