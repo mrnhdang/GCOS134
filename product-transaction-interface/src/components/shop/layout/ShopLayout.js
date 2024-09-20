@@ -17,33 +17,9 @@ const NAV_URL = [
 const ShopLayout = ({ children }) => {
   const pathname = usePathname();
   const { cart } = useContext(CartStateContext);
+  const { auth } = useContext(AuthStateContext);
   const { logout } = useContext(AuthStateContext);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [clock, setClock] = useState();
-
-  const formatDate = (date) => {
-    // Get day, month, year
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-
-    // Get hours, minutes, seconds
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-
-    // Format as dd/mm/yyyy : hh:mm:ss
-    return {
-      date: `${day}/${month}/${year}`,
-      time: `${hours}:${minutes}:${seconds}`,
-    };
-  };
-
-  useEffect(() => {
-    setInterval(() => {
-      setClock(formatDate(new Date()));
-    }, 1000);
-  }, [clock]);
 
   return (
     <div>
@@ -66,11 +42,8 @@ const ShopLayout = ({ children }) => {
               </a>
             ))}
 
-            {/* Clock */}
-            <h1 className="flex flex-col justify-center align-middle items-center border-[3px] border-solid border-white bg-gradient-to-tr from-white to to-slate-300 p-1 rounded-lg">
-              <span>{clock?.time}</span>
-              <span className="text-sm">{clock?.date}</span>
-            </h1>
+            {/* Balance */}
+            <h1 className="text-gray-400">{auth?.balance}</h1>
 
             {/* Cart */}
             <IconButton aria-label="cart" onClick={() => setOpenDrawer(true)}>

@@ -11,9 +11,11 @@ import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.BillRepository;
 import com.example.demo.repository.OrderDetailRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +26,20 @@ public class BillService {
     private BillRepository billRepository;
     private UserService userService;
     private OrderDetailRepository orderDetailRepository;
+    private UserRepository userRepository;
+    private OrderService orderService;
 
-    public List<Bill> getAllBill() {
-        return billRepository.findAll();
+    public List<BillGetDetailDto> getAllBill() {
+        List<Bill> bills = billRepository.findAll();
+
+        return bills.stream().map(bill -> BillGetDetailDto.builder()
+                .id(bill.getId())
+                .user(bill.getOrder().getUser())
+                .orderId(bill.getOrder().getId())
+                .payDate(bill.getPayDate())
+                .status(bill.getStatus())
+                .totalPrice(bill.getTotalPrice())
+                .build()).toList();
     }
 
     public Bill checkExistBill(String id) {
@@ -50,7 +63,9 @@ public class BillService {
         });
 
         return BillGetDetailDto.builder()
-                .products(orderProductDtos).id(bill.getId())
+                .orderId(bill.getOrder().getId())
+                .products(orderProductDtos)
+                .id(bill.getId())
                 .payDate(bill.getPayDate())
                 .status(bill.getStatus())
                 .user(bill.getOrder().getUser())
@@ -74,6 +89,9 @@ public class BillService {
         }
         bill.setPayDate(LocalDate.now());
         bill.setStatus(BillStatus.PAID);
+        BigDecimal updateBalance = user.getBalance().subtract(dto.payPrice());
+        user.setBalance(updateBalance);
+        userRepository.save(user);
         billRepository.save(bill);
     }
 

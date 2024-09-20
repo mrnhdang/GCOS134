@@ -13,11 +13,10 @@ import styled from "styled-components";
 const NoLineTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: "none",
 }));
-const ProductTable = (products) => {
-  console.log(products);
 
+const ProductTable = (products) => {
   return (
-    <TableContainer sx={{ marginY: 2 }}>
+    <TableContainer>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

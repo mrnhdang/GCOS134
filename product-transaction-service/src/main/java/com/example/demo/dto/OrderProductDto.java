@@ -21,4 +21,5 @@ public class OrderProductDto {
     private Integer orderAmount = 0;
     private String productName;
     private BigDecimal price;
+    private String image;
 }

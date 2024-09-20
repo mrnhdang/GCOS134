@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 public class BillGetDetailDto {
     private String id;
+    private String orderId;
     private BillStatus status;
     private LocalDate payDate;
     private User user;

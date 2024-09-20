@@ -32,8 +32,31 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
     }
 
-    public List<Order> getAllOrder() {
-        return orderRepository.findAll();
+    public List<OrderProductDto> mapToProductDto(List<Product> products, String orderId){
+        List<OrderProductDto> orderProductDtos = new ArrayList<>();
+
+        products.forEach(product -> {
+            OrderDetail orderDetail = orderDetailRepository.findByProductAndOrder(product.getId(), orderId);
+            OrderProductDto dto = OrderProductDto.builder()
+                    .productId(product.getId())
+                    .productName(product.getProductName())
+                    .price(product.getPrice())
+                    .orderAmount(orderDetail.getTotalAmount())
+                    .image(product.getImage())
+                    .build();
+            orderProductDtos.add(dto);
+        });
+        return orderProductDtos;
+    }
+
+    public List<OrderGetDetailDto> getAllOrder() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map((order) -> OrderGetDetailDto.builder()
+                .billId(order.getBill().getId())
+                .id(order.getId())
+                .user(order.getUser())
+                .status(order.getStatus())
+                .build()).toList();
     }
 
     public OrderGetDetailDto getOrderDetails(String orderId) {
@@ -48,6 +71,7 @@ public class OrderService {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .orderAmount(orderDetail.getTotalAmount())
+                    .image(product.getImage())
                     .build();
             orderProductDtos.add(dto);
         });
@@ -57,6 +81,7 @@ public class OrderService {
                 .purchaseDate(orderDetails.getPurchaseDate())
                 .user(orderDetails.getUser())
                 .products(orderProductDtos)
+                .billId(orderDetails.getBill() != null ? orderDetails.getBill().getId() : null)
                 .build();
     }
 
