@@ -3,7 +3,11 @@ package com.example.demo.service;
 import com.example.demo.dto.OrderGetDetailDto;
 import com.example.demo.dto.OrderPostDto;
 import com.example.demo.dto.OrderProductDto;
-import com.example.demo.entity.*;
+import com.example.demo.entity.Order;
+import com.example.demo.entity.OrderDetail;
+import com.example.demo.entity.OrderStatus;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.OrderDetailRepository;
@@ -13,7 +17,6 @@ import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,12 +30,13 @@ public class OrderService {
     private UserRepository userRepository;
     private ProductRepository productRepository;
     private OrderDetailRepository orderDetailRepository;
+    private OrderDetailService orderDetailService;
 
     public Order checkExistOrder(String orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
     }
 
-    public List<OrderProductDto> mapToProductDto(List<Product> products, String orderId){
+    public List<OrderProductDto> mapToProductDto(List<Product> products, String orderId) {
         List<OrderProductDto> orderProductDtos = new ArrayList<>();
 
         products.forEach(product -> {
@@ -71,6 +75,7 @@ public class OrderService {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .orderAmount(orderDetail.getTotalAmount())
+                    .holdAmount(orderDetail.getHoldAmount())
                     .image(product.getImage())
                     .build();
             orderProductDtos.add(dto);
@@ -101,20 +106,23 @@ public class OrderService {
         List<OrderDetail> orderDetails = new ArrayList<>();
         List<Product> products = new ArrayList<>();
 
+        // validate user
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new NotFoundException("User with id " + dto.userId() + " doesn't exist."));
 
+        // build order details
         dto.products().forEach(orderProductDto -> {
             if (orderProductDto.getOrderAmount() <= 0) {
                 throw new InvalidInputParameter("Order amount must be more than 0.");
             }
             Product orderProduct = productRepository.findById(orderProductDto.getProductId())
                     .orElseThrow(() -> new NotFoundException("Product with id " + orderProductDto.getProductId() + " doesn't exist."));
+            OrderDetail orderDetail = OrderDetail.builder().product(orderProduct).holdAmount(orderProductDto.getOrderAmount()).build();
             products.add(orderProduct);
-            OrderDetail orderDetail = OrderDetail.builder().product(orderProduct).totalAmount(orderProductDto.getOrderAmount()).build();
             orderDetails.add(orderDetail);
         });
 
+        // build the order
         newOrder = Order.builder()
                 .user(user)
                 .purchaseDate(LocalDate.now())
@@ -122,8 +130,9 @@ public class OrderService {
                 .status(OrderStatus.PROCESSING)
                 .build();
         Order savedOrder = orderRepository.save(newOrder);
-        orderDetails.forEach(orderDetail -> orderDetail.setOrder(savedOrder));
-        orderDetailRepository.saveAll(orderDetails);
+
+        // create order detail
+        orderDetailService.addOrUpdateOrderDetail(orderDetails, savedOrder);
 
         return savedOrder;
     }

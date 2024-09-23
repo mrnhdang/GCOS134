@@ -24,4 +24,5 @@ public class OrderDetail {
     private Product product;
 
     private Integer totalAmount;
+    private Integer holdAmount;
 }
