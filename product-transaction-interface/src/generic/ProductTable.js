@@ -47,7 +47,7 @@ const ProductTable = (products) => {
                 {product.category || "Unspecify"}
               </NoLineTableCell>
               <NoLineTableCell align="right">
-                {product?.orderAmount}
+                {product?.holdAmount}
               </NoLineTableCell>
               <NoLineTableCell align="right">{product?.price}</NoLineTableCell>
             </TableRow>
