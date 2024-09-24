@@ -1,9 +1,10 @@
 {
   "extends": [
     "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
     "eslint:recommended",
-    "prettier"
+    "prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings"
   ],
   "plugins": [
     "react",
@@ -17,20 +18,44 @@
   ],
   "rules": {
     "prettier/prettier": [
-      "error",
-      {
-        "singleQuote": false
-      }
+      "error"
     ],
     "react/react-in-jsx-scope": "off", // Not needed with Next.js
     "no-unused-vars": [
-      "error",
-      {
-        "argsIgnorePattern": "^_"
-      }
+      "error"
     ],
     "import/no-anonymous-default-export": "off", // Allow anonymous default exports
     "react/prop-types": "off",
-    "no-restricted-imports": ["error"]
+    "no-restricted-imports": [
+      "error"
+    ],
+    "import/no-unresolved": "error", // Error if an import is missing
+    "import/no-named-as-default": "error", // Ensure default exports are imported correctly
+    "import/no-named-as-default-member": "error", // Ensure default member imports are correct
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          [
+            "builtin",
+            "external",
+            "internal"
+          ]
+        ],
+        "newlines-between": "always"
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    }
   }
 }

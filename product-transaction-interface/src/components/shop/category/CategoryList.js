@@ -14,8 +14,28 @@ export default function CategoryList({ category, checked, setChecked }) {
   return (
     <List
       dense
-      sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper", borderRadius: "12px" }}
+      sx={{
+        width: "100%",
+        maxWidth: 360,
+        bgcolor: "background.paper",
+        borderRadius: "12px",
+      }}
     >
+      <ListItem
+        key={0}
+        secondaryAction={
+          <Checkbox
+            edge="end"
+            onChange={handleToggle(undefined)}
+            checked={checked === undefined}
+          />
+        }
+        disablePadding
+      >
+        <ListItemButton>
+          <ListItemText primary="All" />
+        </ListItemButton>
+      </ListItem>
       {category?.map((item, index) => {
         const labelId = `checkbox-list-secondary-label-${index}`;
         return (

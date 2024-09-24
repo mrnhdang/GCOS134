@@ -31,15 +31,11 @@ public class ProductService {
     }
 
     public List<Product> searchProduct(String search) {
-        if (!Objects.isNull(search)) {
-            return productRepository.searchProducts(search);
-        } else return Collections.emptyList();
+        return productRepository.searchProducts(search);
     }
 
     public List<Product> getProductsByCategory(String categoryId) {
-        if (!Objects.isNull(categoryId)) {
-            return productRepository.searchProductsByCategory(categoryId);
-        } else return Collections.emptyList();
+        return productRepository.searchProductsByCategory(categoryId);
     }
 
     public Product getProductById(String id) {

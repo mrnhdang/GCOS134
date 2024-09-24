@@ -34,11 +34,10 @@ const ProductHomePage = () => {
   const [uiState, setUiState] = useState();
   const [category, setCategory] = useState([]);
   const [checked, setChecked] = useState();
+  const [searchText, setSearchText] = useState([]);
 
   const router = useRouter();
   const { addToCart } = useContext(CartStateContext);
-
-  console.log(category[checked])
 
   const getListProduct = async () => {
     let res;
@@ -78,6 +77,24 @@ const ProductHomePage = () => {
     }
   };
 
+  const handleSearchProduct = async () => {
+    let res;
+    try {
+      setUiState({ loading: true });
+      res = await axios.get(
+        `http://localhost:8080/api/v1/product/search?query=${searchText}`
+      );
+      setListProduct(res?.data);
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
+
   const handleOpenCartModal = (product) => {
     addToCart(product);
     setOpenSnackbar(true);
@@ -92,14 +109,15 @@ const ProductHomePage = () => {
   }, []);
 
   return (
-    <div className="w-full h-full min-h-screen flex flex-col items-center justify-start space-y-10">
+    <div className="w-full h-full min-h-screen flex flex-col items-center justify-start space-y-10 p-2">
       <FormControl className="bg-white w-1/2 rounded-lg p-2" variant="outlined">
         <OutlinedInput
           id="outlined-adornment-search"
           placeholder="Search product..."
+          onChange={(e) => setSearchText(e.target.value)}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton edge="end">
+              <IconButton edge="end" onClick={() => handleSearchProduct()}>
                 <SearchOutlinedIcon width={30} />
               </IconButton>
             </InputAdornment>
@@ -137,7 +155,7 @@ const ProductHomePage = () => {
               width: "85%",
               height: "100%",
               backgroundColor: "white",
-              justifyContent: "center",
+              justifyContent: "start",
               borderRadius: "12px",
             }}
           >
@@ -162,9 +180,17 @@ const ProductHomePage = () => {
                     display: "flex",
                     flexDirection: "column",
                     alignContent: "centers",
+                    p: 1,
                   }}
                 >
-                  <CardMedia sx={{ height: "100%" }} image={product?.image} />
+                  <CardMedia
+                    sx={{
+                      height: "100%",
+                      border: "1px solid whites",
+                      borderRadius: "12px",
+                    }}
+                    image={product?.image}
+                  />
                   <CardContent>
                     <Typography gutterBottom variant="a" component="div">
                       {product.productName || "testing"}
@@ -177,7 +203,7 @@ const ProductHomePage = () => {
                     <IconButton
                       size="small"
                       onClick={() => {
-                        router.push(`/product/${product.id}`);
+                        router.push(`/product/${product?.id}`);
                       }}
                     >
                       <VisibilityOutlinedIcon />
