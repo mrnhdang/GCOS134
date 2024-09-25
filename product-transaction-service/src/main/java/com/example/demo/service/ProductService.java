@@ -4,16 +4,19 @@ import com.example.demo.dto.ProductPostDto;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Inventory;
 import com.example.demo.entity.Product;
+import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.util.Optionals;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,9 +31,11 @@ public class ProductService {
     }
 
     public List<Product> searchProduct(String search) {
-        if (!Objects.isNull(search)) {
-            return productRepository.searchProducts(search);
-        } else return Collections.emptyList();
+        return productRepository.searchProducts(search);
+    }
+
+    public List<Product> getProductsByCategory(String categoryId) {
+        return productRepository.searchProductsByCategory(categoryId);
     }
 
     public Product getProductById(String id) {
@@ -53,7 +58,12 @@ public class ProductService {
     }
 
     public Product updateProduct(ProductPostDto dto, String id) {
-        Product savedProduct = Product.builder().id(id).productName(dto.productName()).price(dto.price()).build();
+        Category category = categoryService.checkExistCategory(dto.categoryId());
+        Product savedProduct = getProductById(id);
+        Optional.ofNullable(dto.productName()).ifPresent(savedProduct::setProductName);
+        Optional.ofNullable(dto.image()).ifPresent(savedProduct::setImage);
+        Optional.ofNullable(dto.price()).ifPresent(savedProduct::setPrice);
+        savedProduct.setCategory(category);
         return productRepository.save(savedProduct);
     }
 

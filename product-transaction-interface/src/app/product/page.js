@@ -13,6 +13,11 @@ import {
   Modal,
   Tooltip,
   CircularProgress,
+  TextField,
+  InputAdornment,
+  OutlinedInput,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -20,23 +25,65 @@ import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutl
 import axios from "axios";
 import CustomSnackbar from "@/generic/CustomSnackbar";
 import { CartStateContext } from "@/provider/CartContext";
+import CategoryList from "@/components/shop/category/CategoryList";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const ProductHomePage = () => {
-  //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
-  const router = useRouter();
-  const { addToCart } = useContext(CartStateContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [listProduct, setListProduct] = useState([]);
   const [uiState, setUiState] = useState();
+  const [category, setCategory] = useState([]);
+  const [checked, setChecked] = useState();
+  const [searchText, setSearchText] = useState([]);
 
-  useEffect(() => {
-    getListProduct();
-  }, []);
+  const router = useRouter();
+  const { addToCart } = useContext(CartStateContext);
 
   const getListProduct = async () => {
+    let res;
     try {
       setUiState({ loading: true });
-      const res = await axios.get("http://localhost:8080/api/v1/product");
+      if (category[checked]) {
+        res = await axios.get(
+          `http://localhost:8080/api/v1/product/category/${category[checked]?.id}`
+        );
+      } else {
+        res = await axios.get("http://localhost:8080/api/v1/product");
+      }
+
+      setListProduct(res?.data);
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
+
+  const getListCategory = async () => {
+    try {
+      setUiState({ loading: true });
+      const res = await axios.get("http://localhost:8080/api/v1/category");
+      setCategory(res?.data);
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
+
+  const handleSearchProduct = async () => {
+    let res;
+    try {
+      setUiState({ loading: true });
+      res = await axios.get(
+        `http://localhost:8080/api/v1/product/search?query=${searchText}`
+      );
       setListProduct(res?.data);
       setUiState({ loading: false });
     } catch (error) {
@@ -53,8 +100,31 @@ const ProductHomePage = () => {
     setOpenSnackbar(true);
   };
 
+  useEffect(() => {
+    getListProduct();
+  }, [checked]);
+
+  useEffect(() => {
+    getListCategory();
+  }, []);
+
   return (
-    <div className="w-full h-full min-h-screen flex justify-center">
+    <div className="w-full h-full min-h-screen flex flex-col items-center justify-start space-y-10 p-2">
+      <FormControl className="bg-white w-1/2 rounded-lg p-2" variant="outlined">
+        <OutlinedInput
+          id="outlined-adornment-search"
+          placeholder="Search product..."
+          onChange={(e) => setSearchText(e.target.value)}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton edge="end" onClick={() => handleSearchProduct()}>
+                <SearchOutlinedIcon width={30} />
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+
       {uiState?.success && (
         <Alert color="success" severity="success">
           {uiState?.success}
@@ -65,79 +135,96 @@ const ProductHomePage = () => {
           {uiState?.error}
         </Alert>
       )}
+
       <CustomSnackbar
         openSnackbar={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
-      {!uiState?.loading ? (
-        <Grid
-          container
-          sx={{
-            p: 2,
-            width: "85%",
-            height: "100%",
-            backgroundColor: "white",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {listProduct?.map((product) => (
-            <Grid
-              sx={{
-                width: "100%",
-                height: "100%",
-                marginBottom: 1,
-                flexShrink: "inherit",
-              }}
-              item
-              xs={6}
-              sm={4}
-              md={2}
-              key={product.id}
-            >
-              <Card
+
+      <div className="flex w-full space-x-2">
+        <CategoryList
+          category={category}
+          checked={checked}
+          setChecked={setChecked}
+        />
+        {!uiState?.loading ? (
+          <Grid
+            container
+            sx={{
+              p: 2,
+              width: "85%",
+              height: "100%",
+              backgroundColor: "white",
+              justifyContent: "start",
+              borderRadius: "12px",
+            }}
+          >
+            {listProduct?.map((product) => (
+              <Grid
                 sx={{
-                  width: "200px",
-                  height: "350px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignContent: "centers",
+                  width: "100%",
+                  height: "100%",
+                  marginBottom: 1,
+                  flexShrink: "inherit",
                 }}
+                item
+                xs={6}
+                sm={4}
+                md={2}
+                key={product.id}
               >
-                <CardMedia sx={{ height: "100%" }} image={product?.image} />
-                <CardContent>
-                  <Typography gutterBottom variant="a" component="div">
-                    {product.productName || "testing"}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {product.price || 1000000} VND
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <IconButton
-                    size="small"
-                    onClick={() => {
-                      router.push(`/product/${product.id}`);
+                <Card
+                  sx={{
+                    width: "200px",
+                    height: "350px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignContent: "centers",
+                    p: 1,
+                  }}
+                >
+                  <CardMedia
+                    sx={{
+                      height: "100%",
+                      border: "1px solid whites",
+                      borderRadius: "12px",
                     }}
-                  >
-                    <VisibilityOutlinedIcon />
-                  </IconButton>
-                  <Tooltip title="Add to cart">
+                    image={product?.image}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="a" component="div">
+                      {product.productName || "testing"}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {product.price || 1000000} VND
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
                     <IconButton
                       size="small"
-                      onClick={() => handleOpenCartModal(product)}
+                      onClick={() => {
+                        router.push(`/product/${product?.id}`);
+                      }}
                     >
-                      <AddShoppingCartOutlinedIcon />
+                      <VisibilityOutlinedIcon />
                     </IconButton>
-                  </Tooltip>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <CircularProgress />
-      )}
+                    <Tooltip title="Add to cart">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenCartModal(product)}
+                      >
+                        <AddShoppingCartOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <CircularProgress />
+        )}
+      </div>
     </div>
   );
 };

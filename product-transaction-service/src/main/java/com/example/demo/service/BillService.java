@@ -6,6 +6,7 @@ import com.example.demo.dto.OrderProductDto;
 import com.example.demo.entity.Bill;
 import com.example.demo.entity.BillStatus;
 import com.example.demo.entity.OrderDetail;
+import com.example.demo.entity.OrderStatus;
 import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
@@ -14,6 +15,7 @@ import com.example.demo.repository.OrderDetailRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,13 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class BillService {
     private BillRepository billRepository;
     private UserService userService;
     private OrderDetailRepository orderDetailRepository;
     private UserRepository userRepository;
-    private OrderService orderService;
+    private OrderDetailService orderDetailService;
 
     public List<BillGetDetailDto> getAllBill() {
         List<Bill> bills = billRepository.findAll();
@@ -58,6 +61,7 @@ public class BillService {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .orderAmount(orderDetail.getTotalAmount())
+                    .holdAmount(orderDetail.getHoldAmount())
                     .build();
             orderProductDtos.add(dto);
         });
@@ -79,6 +83,7 @@ public class BillService {
     }
 
     public void payBill(String id, BillPaymentDto dto) {
+        // validation
         Bill bill = checkExistBill(id);
         User user = userService.getUserById(dto.userId());
         if (user.getBalance().compareTo(dto.payPrice()) < 0) {
@@ -87,10 +92,18 @@ public class BillService {
         if (dto.payPrice().compareTo(bill.getTotalPrice()) < 0) {
             throw new InvalidInputParameter("Not enough for the bill.");
         }
+
+        // update bill status, pay date, and user balance
         bill.setPayDate(LocalDate.now());
         bill.setStatus(BillStatus.PAID);
+        bill.getOrder().setStatus(OrderStatus.DONE);
         BigDecimal updateBalance = user.getBalance().subtract(dto.payPrice());
         user.setBalance(updateBalance);
+
+        // update order details and update inventory
+        orderDetailService.addOrUpdateOrderDetail(new ArrayList<>(), bill.getOrder());
+
+        // save
         userRepository.save(user);
         billRepository.save(bill);
     }

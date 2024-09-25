@@ -17,8 +17,8 @@ import java.math.BigDecimal;
 public class OrderProductDto {
     @NonNull
     private String productId;
-    @NonNull
     private Integer orderAmount = 0;
+    private Integer holdAmount = 0;
     private String productName;
     private BigDecimal price;
     private String image;

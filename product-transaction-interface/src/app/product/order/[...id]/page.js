@@ -42,7 +42,7 @@ const OrderDetailPage = ({ params }) => {
   const totalPrice = useMemo(
     () =>
       orderDetail?.products?.reduce((total, item) => {
-        return total + item.price * item.orderAmount;
+        return total + item.price * item.holdAmount;
       }, 0),
     [orderDetail]
   );
@@ -100,7 +100,7 @@ const OrderDetailPage = ({ params }) => {
                     secondary={product?.price}
                   />
                   <p className="bg-blue-400 w-8 h-8 p-1 rounded-lg text-center align-middle text-white font-bold">
-                    {product?.orderAmount}
+                    {product?.holdAmount}
                   </p>
                 </ListItem>
               ))}

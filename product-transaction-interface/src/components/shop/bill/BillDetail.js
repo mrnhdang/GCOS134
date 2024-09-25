@@ -40,12 +40,10 @@ const BillDetail = ({ billId }) => {
     }
   };
 
-  const handleRemovePurchaseOrder = async () => {
+  const handleRemoveBill = async () => {
     setUiState({ loading: true });
     try {
-      await axios.delete(
-        `http://localhost:8080/api/v1/order/delete/${bill?.orderId}`
-      );
+      await axios.delete(`http://localhost:8080/api/v1/bill/${bill?.id}`);
       setUiState({ loading: false });
     } catch (error) {
       const message = error?.response?.data?.message;
@@ -87,7 +85,7 @@ const BillDetail = ({ billId }) => {
         setCountdown(countdown - 1);
       }, 1000);
     } else {
-      handleRemovePurchaseOrder();
+      handleRemoveBill();
       router.push("/product");
     }
   }, [countdown]);
@@ -166,7 +164,9 @@ const BillDetail = ({ billId }) => {
           {/* Payment */}
           <div className="flex items-stretch justify-between align-middle p-1 my-10">
             <div className="w-full">
-              <h1 className="text-gray-400">Your balance: {bill?.user?.balance}</h1>
+              <h1 className="text-gray-400">
+                Your balance: {bill?.user?.balance}
+              </h1>
               <TextField
                 label="Enter money"
                 variant="outlined"

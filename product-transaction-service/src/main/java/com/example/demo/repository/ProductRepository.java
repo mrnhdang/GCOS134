@@ -11,4 +11,7 @@ import java.util.List;
 public interface ProductRepository extends MongoRepository<Product, String> {
     @Query("{ 'productName': { $regex: ?0 } }")
     List<Product> searchProducts(String search);
+
+    @Query("{ 'category.id': ?0 }")
+    List<Product> searchProductsByCategory(String categoryId);
 }
