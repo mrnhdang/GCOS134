@@ -3,11 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.BillGetDetailDto;
 import com.example.demo.dto.BillPaymentDto;
 import com.example.demo.dto.OrderProductDto;
-import com.example.demo.entity.Bill;
-import com.example.demo.entity.BillStatus;
-import com.example.demo.entity.OrderDetail;
-import com.example.demo.entity.OrderStatus;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.BillRepository;
@@ -26,18 +22,19 @@ import java.util.List;
 @Transactional
 @AllArgsConstructor
 public class BillService {
-    private BillRepository billRepository;
     private UserService userService;
+    private OrderDetailService orderDetailService;
     private OrderDetailRepository orderDetailRepository;
     private UserRepository userRepository;
-    private OrderDetailService orderDetailService;
+    private BillRepository billRepository;
+
 
     public List<BillGetDetailDto> getAllBill() {
         List<Bill> bills = billRepository.findAll();
 
         return bills.stream().map(bill -> BillGetDetailDto.builder()
                 .id(bill.getId())
-                .user(bill.getOrder().getUser())
+                .username(bill.getOrder().getUser().getUsername())
                 .orderId(bill.getOrder().getId())
                 .payDate(bill.getPayDate())
                 .status(bill.getStatus())
@@ -72,7 +69,7 @@ public class BillService {
                 .id(bill.getId())
                 .payDate(bill.getPayDate())
                 .status(bill.getStatus())
-                .user(bill.getOrder().getUser())
+                .username(bill.getOrder().getUser().getUsername())
                 .totalPrice(bill.getTotalPrice())
                 .build();
     }
@@ -80,6 +77,10 @@ public class BillService {
     public void deleteBillById(String id) {
         checkExistBill(id);
         billRepository.deleteById(id);
+    }
+
+    public void deleteAllBill(){
+        billRepository.deleteAll();
     }
 
     public void payBill(String id, BillPaymentDto dto) {

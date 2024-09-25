@@ -18,7 +18,7 @@ public class BillGetDetailDto {
     private String orderId;
     private BillStatus status;
     private LocalDate payDate;
-    private User user;
+    private String username;
     private BigDecimal totalPrice;
     private List<OrderProductDto> products;
 }

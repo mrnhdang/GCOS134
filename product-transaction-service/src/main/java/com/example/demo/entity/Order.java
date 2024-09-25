@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -39,12 +39,12 @@ public class UserController {
         User user = userService.loginUser(dto);
         return ResponseEntity.ok(user);
     }
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<User> editUser(@RequestBody UserRegisterDto dto, @PathVariable("id") String id) {
         User savedUser = userService.updateUser(dto, id);
         return ResponseEntity.ok(savedUser);
     }
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable("id") String id){
         userService.deleteUserById(id);

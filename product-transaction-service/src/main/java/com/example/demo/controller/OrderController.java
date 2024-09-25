@@ -52,4 +52,10 @@ public class OrderController {
     public void deleteOrder(@PathVariable("id") String orderId){
         orderService.deleteOrder(orderId);
     }
+
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAllOrder(){
+        orderService.deleteAllOrder();
+    }
 }
