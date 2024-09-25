@@ -23,17 +23,17 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAllCategory());
     }
 
-    @PostMapping("/add")
+    @PostMapping("")
     public ResponseEntity<List<Category>> createCategories(@RequestBody ListCategoriesPostDto listCategoriesPostDto) {
         return new ResponseEntity<>(categoryService.createListCategory(listCategoriesPostDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Category> editCategory(@PathVariable("id") String categoryId, @RequestBody String categoryName) {
         return ResponseEntity.ok(categoryService.updateCategory(categoryId, categoryName));
     }
 
-    @PatchMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategory(@PathVariable("id") String categoryId) {
         categoryService.deleteCategory(categoryId);

@@ -39,4 +39,10 @@ public class BillController {
     public void deleteBill(@PathVariable("id") String id) {
         billService.deleteBillById(id);
     }
+
+    @DeleteMapping("/delete-all")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAllBill() {
+        billService.deleteAllBill();
+    }
 }

@@ -10,10 +10,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.repository.OrderDetailRepository;
-import com.example.demo.repository.OrderRepository;
-import com.example.demo.repository.ProductRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,5 +138,10 @@ public class OrderService {
         checkExistOrder(orderId);
         orderDetailRepository.deleteByOrderId(orderId);
         orderRepository.deleteById(orderId);
+    }
+
+    public void deleteAllOrder(){
+        orderDetailRepository.deleteAll();
+        orderRepository.deleteAll();
     }
 }

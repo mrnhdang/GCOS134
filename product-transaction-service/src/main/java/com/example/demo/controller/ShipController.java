@@ -44,7 +44,7 @@ public class ShipController {
         return ResponseEntity.ok(shipService.confirmShippedOrder(shipId));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteOrderShipping(@PathVariable("id") String shipId) {
         shipService.deleteOrderShipping(shipId);
     }

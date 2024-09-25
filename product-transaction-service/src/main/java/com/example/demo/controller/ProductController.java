@@ -48,7 +48,7 @@ public class ProductController {
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/edit/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Product> editProduct(@RequestBody ProductPostDto dto, @PathVariable("id") String id) {
         Product savedProduct = productService.updateProduct(dto, id);
         return ResponseEntity.ok(savedProduct);
