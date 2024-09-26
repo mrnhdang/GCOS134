@@ -52,8 +52,8 @@ const ProductDetail = ({ id }) => {
             padding: "20px",
             backgroundColor: "white",
             borderRadius: "12px",
-            width: "90%",
-            // height: "fit-content",
+            width: "80%",
+            height: "fit-content",
             justifyItems: "center",
           }}
         >
@@ -69,37 +69,11 @@ const ProductDetail = ({ id }) => {
 
             {/* Right section: Product Details */}
             <Grid item xs={12} md={6} sx={{ p: 2 }}>
-              <Typography variant="h4">{product?.productName}</Typography>
-
-              {/* Style */}
-              <Box sx={{ marginTop: "20px" }}>
-                <Typography variant="h6">Style</Typography>
-                {["Minimal", "Bohemian", "Floral", "Other"].map((s) => (
-                  <Button key={s} sx={{ marginRight: "10px" }}>
-                    {s}
-                  </Button>
-                ))}
-              </Box>
-
-              {/* Color */}
-              <Box sx={{ marginTop: "20px" }}>
-                <Typography variant="h6">Color</Typography>
-                {["Green", "Blue", "White", "Pink"].map((c) => (
-                  <Button key={c} sx={{ marginRight: "10px" }}>
-                    {c}
-                  </Button>
-                ))}
-              </Box>
-
-              {/* Size */}
-              <Box sx={{ marginTop: "20px" }}>
-                <Typography variant="h6">Size</Typography>
-                {["Twin XL", "Full"].map((s) => (
-                  <Button key={s} sx={{ marginRight: "10px" }}>
-                    {s}
-                  </Button>
-                ))}
-              </Box>
+              <h1 className="font-bold text-3xl">{product?.productName}</h1>
+              <Grid item xs={12} md={6} sx={{ p: 2 }}>
+                <h1 className="text-2xl">{product?.category?.categoryName}</h1>
+                <h1 className="text-2xl">{product?.price}</h1>
+              </Grid>
             </Grid>
           </Grid>
 
@@ -112,7 +86,8 @@ const ProductDetail = ({ id }) => {
               left: "50%",
               transform: "translateX(-50%)", // Center the box horizontally
               padding: "20px",
-              border: "1px solid #ccc",
+              paddingX: "80px",
+              // border: "1px solid #ccc",
               borderRadius: "8px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Optional: Add some shadow for visual effect
               display: "flex",
@@ -121,17 +96,21 @@ const ProductDetail = ({ id }) => {
               width: "90%", // Control the width of the summary box
             }}
           >
-            <Typography variant="h6">{product?.productName}</Typography>
-            <Typography variant="h6" className="font-bold">
-              {product?.price} (VND)
-            </Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => addToCart(product)}
-            >
-              Add to Cart
-            </Button>
+            <h1 className="font-bold text-xl">{product?.productName}</h1>
+
+            <div className="flex align-middle justify-center items-center space-x-2">
+              <h1>
+                {product?.price}
+                <a className="underline">đ</a>
+              </h1>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => addToCart(product)}
+              >
+                Add to Cart
+              </Button>
+            </div>
           </Box>
         </Box>
       )}
