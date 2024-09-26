@@ -1,12 +1,23 @@
 "use client";
-import { Badge, Box, Button, IconButton, Typography } from "@mui/material";
-import { usePathname } from "next/navigation";
+import {
+  Badge,
+  Box,
+  Button,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
+import { usePathname, useRouter } from "next/navigation";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CustomDrawer from "@/generic/CustomDrawer";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { CartStateContext } from "@/provider/CartContext";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { AuthStateContext } from "@/provider/AuthContext";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 
 const NAV_URL = [
   { label: "Home", url: "/product" },
@@ -16,10 +27,19 @@ const NAV_URL = [
 
 const ShopLayout = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const { cart } = useContext(CartStateContext);
   const { auth } = useContext(AuthStateContext);
   const { logout } = useContext(AuthStateContext);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div>
@@ -42,9 +62,6 @@ const ShopLayout = ({ children }) => {
               </a>
             ))}
 
-            {/* Balance */}
-            <h1 className="text-gray-400">{auth?.balance}</h1>
-
             {/* Cart */}
             <IconButton aria-label="cart" onClick={() => setOpenDrawer(true)}>
               <Badge badgeContent={cart ? cart?.length : "0"} color="secondary">
@@ -53,10 +70,50 @@ const ShopLayout = ({ children }) => {
             </IconButton>
 
             {/* Avatar */}
-            <IconButton>
-              <AccountCircleOutlinedIcon />
-            </IconButton>
-            <Button onClick={() => logout()}>Logout</Button>
+            {auth ? (
+              <>
+                <IconButton
+                  id="basic-button"
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                >
+                  <AccountCircleOutlinedIcon />
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem onClick={() => router.push("/product/user")}>
+                    <ListItemIcon>
+                      <PersonOutlineOutlinedIcon />
+                    </ListItemIcon>
+                    Profile
+                  </MenuItem>
+                  <MenuItem onClick={() => logout()}>
+                    <ListItemIcon>
+                      <ExitToAppOutlinedIcon />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => router.push("/user/login")}>
+                  LOGIN
+                </Button>
+                <Button onClick={() => router.push("/user/register")}>
+                  REGISTER
+                </Button>
+              </>
+            )}
           </div>
         </Box>
       </Box>
