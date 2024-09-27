@@ -37,14 +37,6 @@ public class UserRegisterDto {
         this.address = address;
     }
 
-    public String getPhonenumber() {
-        return phoneNumber;
-    }
-
-    public void setPhonenumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getPassword() {
         return password;
     }

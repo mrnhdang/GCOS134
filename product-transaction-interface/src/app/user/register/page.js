@@ -14,45 +14,53 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
 import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
 import KeyOffRoundedIcon from "@mui/icons-material/KeyOffRounded";
+import axios from "axios";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import SmartphoneOutlinedIcon from "@mui/icons-material/SmartphoneOutlined";
 
 const RegisterPage = () => {
   //điều hướng đến 1 trang khác dùng userRouter của Navigation ko dùng của next/Router
   const router = useRouter();
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [registerUser, setRegisterUser] = useState({
+    username: "",
+    email: "",
+    address: "",
+    phoneNumber: "",
+    password: "",
+  });
+  const [uiState, setUiState] = useState();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleInputUsername = (event) => {
-    setUsername(event.target.value);
-  };
-  const handleInputPassword = (event) => {
-    setPassword(event.target.value);
-  };
-  const handleInputEmail = (event) => {
-    setEmail(event.target.value);
-  };
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  const handleChange = (e) => {
+    setRegisterUser({
+      ...registerUser,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const hanldeRegister = async () => {
     try {
-      if (username === "") {
-        alert("Please enter a username");
-      } else if (password === "") {
-        alert("Please enter a password");
-      } else if (email === "") {
-        alert("Please enter a email");
-      }
-
-      const registerModel = await registerClient(username, password, email);
-      if (registerModel.isRegisterDone) {
+      setUiState({ loading: true });
+      const res = await axios.post(
+        "http://localhost:8080/api/v1/user/register",
+        registerUser
+      );
+      if (res?.data) {
         router.push("/user/login");
       }
-    } catch (e) {}
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
   };
 
   return (
@@ -64,14 +72,26 @@ const RegisterPage = () => {
         <div className="flex flex-col items-center text-black text-[13px] mb-8">
           Enter your infomation for account
         </div>
+        {uiState?.success && (
+          <Alert color="success" severity="success">
+            {uiState?.success}
+          </Alert>
+        )}
+        {uiState?.error && (
+          <Alert color="error" severity="error">
+            {uiState?.error}
+          </Alert>
+        )}
+
         <div className="flex flex-col items-center justify-center align-middle gap-6 w-2/5">
           <TextField
             fullWidth
+            name="username"
             variant="standard"
             id="outlined-basic"
             type={"text"}
             label="Username"
-            onChange={handleInputUsername}
+            onChange={handleChange}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -83,15 +103,48 @@ const RegisterPage = () => {
 
           <TextField
             fullWidth
+            name="email"
             variant="standard"
             id="outlined-basic"
             type={"Email"}
-            onChange={handleInputEmail}
+            onChange={handleChange}
             label="Email"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <AlternateEmailOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            fullWidth
+            name="address"
+            variant="standard"
+            id="outlined-basic"
+            type={"text"}
+            label="Address"
+            onChange={handleChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <HomeOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            fullWidth
+            name="phonnumber"
+            variant="standard"
+            id="outlined-basic"
+            type={"text"}
+            label="Phone Number"
+            onChange={handleChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SmartphoneOutlinedIcon />
                 </InputAdornment>
               ),
             }}
@@ -102,6 +155,8 @@ const RegisterPage = () => {
               Password
             </InputLabel>
             <Input
+              name="password"
+              onChange={handleChange}
               type={showPassword ? "text" : "password"}
               startAdornment={
                 <InputAdornment>

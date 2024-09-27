@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
-    @Query("{ 'productName': { $regex: ?0 } }")
+    @Query("{ 'productName': { $regex: ?0, '$options': 'i' } }")
     List<Product> searchProducts(String search);
 
     @Query("{ 'category.id': ?0 }")

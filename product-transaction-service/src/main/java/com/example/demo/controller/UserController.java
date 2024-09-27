@@ -23,11 +23,13 @@ public class UserController {
         List<User> users = userService.getAllUser();
         return ResponseEntity.ok(users);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
+
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody UserRegisterDto dto) {
         User newUser = userService.registerUser(dto);
@@ -39,14 +41,16 @@ public class UserController {
         User user = userService.loginUser(dto);
         return ResponseEntity.ok(user);
     }
+
     @PatchMapping("/{id}")
     public ResponseEntity<User> editUser(@RequestBody UserRegisterDto dto, @PathVariable("id") String id) {
         User savedUser = userService.updateUser(dto, id);
         return ResponseEntity.ok(savedUser);
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(@PathVariable("id") String id){
+    public void deleteUser(@PathVariable("id") String id) {
         userService.deleteUserById(id);
     }
 

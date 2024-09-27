@@ -13,8 +13,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -27,7 +29,7 @@ public class UserService {
     public User registerUser(UserRegisterDto dto) {
         User user = User.builder().username(dto.getUsername())
                 .address(dto.getAddress())
-                .phoneNumber(dto.getPhonenumber())
+                .phoneNumber(dto.getPhoneNumber())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
                 .role(dto.getRole())
@@ -56,14 +58,15 @@ public class UserService {
     }
 
     public User updateUser(UserRegisterDto dto, String id) {
-        User saveUser = User.builder().id(id).username(dto.getUsername())
-                .address(dto.getAddress())
-                .phoneNumber(dto.getPhonenumber())
-                .password(dto.getPassword())
-                .email(dto.getEmail())
-                .role(dto.getRole())
-                .balance(dto.getBalance())
-                .build();
+        User saveUser = getUserById(id);
+        Optional.ofNullable(dto.getAddress()).ifPresent(saveUser::setAddress);
+        Optional.ofNullable(dto.getBalance()).ifPresent(saveUser::setBalance);
+        Optional.ofNullable(dto.getRole()).ifPresent(saveUser::setRole);
+        Optional.ofNullable(dto.getEmail()).ifPresent(saveUser::setEmail);
+        Optional.ofNullable(dto.getPassword()).ifPresent(saveUser::setPassword);
+        Optional.ofNullable(dto.getPhoneNumber()).ifPresent(saveUser::setPhoneNumber);
+        Optional.ofNullable(dto.getUsername()).ifPresent(saveUser::setUsername);
+
         return userRepository.save(saveUser);
     }
 
