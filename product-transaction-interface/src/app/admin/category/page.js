@@ -1,10 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 import axios from "axios";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 const CategoryPage = () => {
   const [categoryList, setCategoryList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getCategoryList();
@@ -12,46 +27,106 @@ const CategoryPage = () => {
 
   const getCategoryList = async () => {
     try {
+      setLoading(true);
       const res = await axios.get("http://localhost:8080/api/v1/category");
       setCategoryList(res?.data);
     } catch (e) {
       console.error("Error fetching category data:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCategory = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/v1/category/${id}`);
+      setBills(listBills.filter((category) => category.id !== id));
+      alert("Category deleted successfully");
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      alert("Failed to delete category");
     }
   };
 
   return (
     <Box sx={{ p: 3 }}>
-      <Paper elevation={3} sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}>
-        <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold', textAlign: "center", mb: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}
+      >
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
+        >
           Category Management
         </Typography>
-
-        <TableContainer component={Paper} sx={{ boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.1)" }}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "#e0f7fa" }}>
-                <TableCell sx={{ fontWeight: 'bold' }}>Category ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Category Name</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {categoryList? (
-                categoryList.map((category) => (
-                  <TableRow key={category?._id} sx={{ '&:hover': { backgroundColor: "#f0f0f0" } }}>
-                    <TableCell>{category?.id}</TableCell>
-                    <TableCell>{category?.categoryName}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={3}>
-                    <Typography textAlign="center">No Categories Found</Typography>
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <TableContainer
+            component={Paper}
+            sx={{ boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.1)" }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#e0f7fa" }}>
+                  <TableCell sx={{ fontWeight: "bold" }}>Category ID</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Category Name
                   </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {categoryList ? (
+                  categoryList.map((category) => (
+                    <TableRow
+                      key={category?.id}
+                      sx={{ "&:hover": { backgroundColor: "#f0f0f0" } }}
+                    >
+                      <TableCell>{category?.id}</TableCell>
+                      <TableCell>{category?.categoryName}</TableCell>
+                      <TableCell>
+                        {/* <IconButton
+                          onClick={() =>
+                            router.push(`/admin/category/${category?.id}`)
+                          }
+                          sx={{ color: "#1976d2" }}
+                        >
+                          <EditOutlinedIcon />
+                        </IconButton> */}
+                        <IconButton
+                          onClick={() => deleteCategory(category?.id)}
+                          sx={{ color: "#d32f2f" }}
+                        >
+                          <DeleteOutlinedIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={3}>
+                      <Typography textAlign="center">
+                        No Categories Found
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Paper>
     </Box>
   );

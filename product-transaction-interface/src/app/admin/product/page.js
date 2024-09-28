@@ -10,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 const AdminPage = () => {
   const router = useRouter();
@@ -22,7 +23,9 @@ const AdminPage = () => {
 
   const getListProduct = async () => {
     try {
-      const listDataProduct = await fetchListProduct();
+      const listDataProduct = await axios.get(
+        "http://localhost:8080/api/v1/product"
+      );
       setListProduct(listDataProduct);
     } catch (e) {
       alert("Please enter a username");
