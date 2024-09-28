@@ -53,6 +53,7 @@ public class OrderService {
     public List<OrderGetDetailDto> getAllOrder() {
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map((order) -> OrderGetDetailDto.builder()
+                .purchaseDate(order.getPurchaseDate())
                 .billId(order.getBill().getId())
                 .id(order.getId())
                 .user(order.getUser())
