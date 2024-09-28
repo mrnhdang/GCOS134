@@ -14,21 +14,21 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const InventoryPage = () => {
-  const [inventoryList, setInventoryList] = useState([]);
+const ShipListPage = () => {
+  const [ships, setShips] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getInventoryList();
+    getShips();
   }, []);
 
-  const getInventoryList = async () => {
+  const getShips = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:8080/api/v1/inventory");
-      setInventoryList(res?.data);
-    } catch (e) {
-      console.error("Error fetching inventory:", e);
+      const response = await axios.get("http://localhost:8080/api/v1/ship");
+      setShips(response.data);
+    } catch (error) {
+      console.error("Error fetching shipments:", error);
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ const InventoryPage = () => {
           gutterBottom
           sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
         >
-          Inventory Management
+          Ship Management
         </Typography>
         {loading ? (
           <Box
@@ -66,33 +66,37 @@ const InventoryPage = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0f7fa" }}>
+                  <TableCell sx={{ fontWeight: "bold" }}>Shipment ID</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>
-                    Inventory ID
+                    Received Name
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>
-                    Product Name
+                    Received Date
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {inventoryList ? (
-                  inventoryList?.map((inventory) => (
+                {ships ? (
+                  ships?.map((ship) => (
                     <TableRow
-                      key={inventory?._id}
+                      key={ship?.id}
                       sx={{ "&:hover": { backgroundColor: "#f0f0f0" } }}
                     >
-                      <TableCell>{inventory?.id}</TableCell>
-                      <TableCell>{inventory?.product?.productName}</TableCell>
-                      <TableCell>{inventory?.currentQuantity}</TableCell>
+                      <TableCell>{ship?.id}</TableCell>
+                      <TableCell>{ship?.status}</TableCell>
+                      <TableCell>{ship?.user?.username}</TableCell>
+                      <TableCell>
+                        {ship?.receivedDate
+                          ? new Date(ship?.receivedDate).toLocaleDateString()
+                          : "UNPAID"}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4}>
-                      <Typography textAlign="center">
-                        No Inventory Items Found
-                      </Typography>
+                    <TableCell colSpan={5}>
+                      <Typography textAlign="center">No Shipments</Typography>
                     </TableCell>
                   </TableRow>
                 )}
@@ -105,4 +109,4 @@ const InventoryPage = () => {
   );
 };
 
-export default InventoryPage;
+export default ShipListPage;

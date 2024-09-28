@@ -23,7 +23,9 @@ const AdminPage = () => {
 
   const getListProduct = async () => {
     try {
-      const listDataProduct = await axios.get('http://localhost:8080/api/v1/product');
+      const listDataProduct = await axios.get(
+        "http://localhost:8080/api/v1/product"
+      );
       setListProduct(listDataProduct);
     } catch (e) {
       alert("Please enter a username");

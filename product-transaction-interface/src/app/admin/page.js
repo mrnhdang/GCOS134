@@ -24,7 +24,6 @@ const AdminPage = () => {
   const router = useRouter();
   const [listProduct, setListProduct] = useState([]);
 
-  // Fetch products from API
   useEffect(() => {
     getListProduct();
   }, []);
@@ -38,7 +37,6 @@ const AdminPage = () => {
     }
   };
 
-  // Delete product
   const handleDeleteProduct = async (productId) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this product?"
