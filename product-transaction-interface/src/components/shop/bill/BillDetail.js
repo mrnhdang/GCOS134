@@ -69,7 +69,7 @@ const BillDetail = ({ billId }) => {
 
       setUiState({ loading: false, success: "Transaction successfully!!!" });
       setCart([]);
-      router.push("/product/success");
+      router.push("/product/successs");
     } catch (error) {
       const message = error?.response?.data?.message;
       setUiState({
