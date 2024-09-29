@@ -83,6 +83,7 @@ public class OrderService {
                 .id(orderId)
                 .purchaseDate(orderDetails.getPurchaseDate())
                 .user(orderDetails.getUser())
+                .status(orderDetails.getStatus())
                 .products(orderProductDtos)
                 .billId(orderDetails.getBill() != null ? orderDetails.getBill().getId() : null)
                 .build();

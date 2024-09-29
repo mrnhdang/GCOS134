@@ -8,6 +8,7 @@ import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.BillRepository;
 import com.example.demo.repository.OrderDetailRepository;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,12 @@ import java.util.List;
 @AllArgsConstructor
 public class BillService {
     private UserService userService;
+    private OrderService orderService;
     private OrderDetailService orderDetailService;
     private OrderDetailRepository orderDetailRepository;
     private UserRepository userRepository;
     private BillRepository billRepository;
+    private OrderRepository orderRepository;
 
 
     public List<BillGetDetailDto> getAllBill() {
@@ -79,7 +82,7 @@ public class BillService {
         billRepository.deleteById(id);
     }
 
-    public void deleteAllBill(){
+    public void deleteAllBill() {
         billRepository.deleteAll();
     }
 
@@ -97,7 +100,12 @@ public class BillService {
         // update bill status, pay date, and user balance
         bill.setPayDate(LocalDate.now());
         bill.setStatus(BillStatus.PAID);
-        bill.getOrder().setStatus(OrderStatus.DONE);
+
+        // update order
+        Order order = orderService.checkExistOrder(bill.getOrder().getId());
+        order.setStatus(OrderStatus.DONE);
+        orderRepository.save(order);
+
         BigDecimal updateBalance = user.getBalance().subtract(dto.payPrice());
         user.setBalance(updateBalance);
 

@@ -9,6 +9,7 @@ import Profile from "./profile/Profile";
 import { useContext } from "react";
 import { AuthStateContext } from "@/provider/AuthContext";
 import { CircularProgress } from "@mui/material";
+import UserOrder from "./order/UserOrder";
 
 const UserProfile = () => {
   const {
@@ -53,8 +54,7 @@ const UserProfile = () => {
           <div className="font-bold">Your Order</div>
         </AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-          malesuada lacus ex, sit amet blandit leo lobortis eget.
+          <UserOrder />
         </AccordionDetails>
       </Accordion>
     </div>

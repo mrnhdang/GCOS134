@@ -1,7 +1,15 @@
 "use client";
 
 import { CartStateContext } from "@/provider/CartContext";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 
@@ -33,7 +41,7 @@ const ProductDetail = ({ id }) => {
   }, []);
 
   return (
-    <div className="h-full min-h-screen flex justify-center px-10">
+    <div className="h-full min-h-screen flex flex-col justify-center items-center space-y-1 px-10">
       {uiState?.success && (
         <Alert color="success" severity="success">
           {uiState?.success}
@@ -55,6 +63,8 @@ const ProductDetail = ({ id }) => {
             width: "80%",
             height: "fit-content",
             justifyItems: "center",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Grid container spacing={2}>
@@ -70,48 +80,37 @@ const ProductDetail = ({ id }) => {
             {/* Right section: Product Details */}
             <Grid item xs={12} md={6} sx={{ p: 2 }}>
               <h1 className="font-bold text-3xl">{product?.productName}</h1>
-              <Grid item xs={12} md={6} sx={{ p: 2 }}>
-                <h1 className="text-2xl">{product?.category?.categoryName}</h1>
-                <h1 className="text-2xl">{product?.price}</h1>
-              </Grid>
+              <div className="w-full">
+                <Typography variant="body1" color="textSecondary">
+                  Category: {product?.category?.categoryName}
+                </Typography>
+                <Typography
+                  variant="h5"
+                  style={{ marginTop: "1rem", color: "red" }}
+                >
+                  {product?.price} VND
+                </Typography>
+                <TextField
+                  fullWidth
+                  sx={{ marginTop: "1rem" }}
+                  id="outlined-multiline-static"
+                  label="Your feedback"
+                  multiline
+                  rows={7}
+                />
+              </div>
             </Grid>
           </Grid>
-
           {/* Fixed Footer for Cart Summary */}
-          <Box
-            sx={{
-              position: "fixed",
-              backdropFilter: "blur(10px)",
-              bottom: 20, // Adjust this value to control the distance from the bottom of the screen
-              left: "50%",
-              transform: "translateX(-50%)", // Center the box horizontally
-              padding: "20px",
-              paddingX: "80px",
-              // border: "1px solid #ccc",
-              borderRadius: "8px",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Optional: Add some shadow for visual effect
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "90%", // Control the width of the summary box
-            }}
-          >
-            <h1 className="font-bold text-xl">{product?.productName}</h1>
-
-            <div className="flex align-middle justify-center items-center space-x-2">
-              <h1>
-                {product?.price}
-                <a className="underline">đ</a>
-              </h1>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => addToCart(product)}
-              >
-                Add to Cart
-              </Button>
-            </div>
-          </Box>
+          <div className="flex justify-end">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => addToCart(product)}
+            >
+              Add to Cart
+            </Button>
+          </div>
         </Box>
       )}
     </div>

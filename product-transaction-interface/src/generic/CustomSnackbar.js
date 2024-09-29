@@ -16,7 +16,7 @@ export default function CustomSnackbar({ openSnackbar, setOpenSnackbar }) {
       <Snackbar
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={openSnackbar}
-        autoHideDuration={1000}
+        autoHideDuration={900}
         onClose={handleClose}
         TransitionComponent={Slide}
       >
