@@ -29,7 +29,7 @@ const ShipListPage = () => {
     try {
       setLoading(true);
       const response = await axios.get("http://localhost:8080/api/v1/ship");
-      setShips(response.data);
+      setShips(response?.data);
     } catch (error) {
       console.error("Error fetching shipments:", error);
     } finally {
@@ -39,18 +39,21 @@ const ShipListPage = () => {
 
   return (
     <Box sx={{ p: 3, height: "100%", minHeight: "100vh" }}>
-      <Typography
-        variant="h3"
-        gutterBottom
-        sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
-      >
-        Ship Management
-      </Typography>
-      <Button onClick={() => router.push("/admin/ship/add")}>Create shipment</Button>
       <Paper
         elevation={3}
         sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}
       >
+        {" "}
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
+        >
+          Ship Management
+        </Typography>
+        <Button onClick={() => router.push("/admin/ship/add")}>
+          Create shipment
+        </Button>
         {loading ? (
           <Box
             sx={{

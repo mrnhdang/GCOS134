@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ShipDetailDto;
 import com.example.demo.dto.ShipPostDto;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderStatus;
@@ -25,8 +26,16 @@ public class ShipService {
     private OrderRepository orderRepository;
     private UserRepository userRepository;
 
-    public List<Ship> getAllShip() {
-        return shipRepository.findAll();
+    public List<ShipDetailDto> getAllShip() {
+        List<Ship> ships = shipRepository.findAll();
+        return ships.stream().map(ship ->
+                ShipDetailDto.builder()
+                        .id(ship.getId())
+                        .receivedDate(ship.getReceivedDate())
+                        .user(ship.getUser())
+                        .status(ship.getStatus())
+                        .build()
+        ).toList();
     }
 
     public List<Ship> searchShippingOrder(LocalDate from, LocalDate to) {

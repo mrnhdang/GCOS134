@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ShipDetailDto;
 import com.example.demo.dto.ShipPostDto;
 import com.example.demo.entity.Ship;
 import com.example.demo.service.ShipService;
@@ -20,7 +21,7 @@ public class ShipController {
     private ShipService shipService;
 
     @GetMapping("")
-    public ResponseEntity<List<Ship>> getAllShip() {
+    public ResponseEntity<List<ShipDetailDto>> getAllShip() {
         return ResponseEntity.ok(shipService.getAllShip());
     }
 
