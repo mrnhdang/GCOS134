@@ -17,6 +17,8 @@ import {
   InputAdornment,
   OutlinedInput,
   FormControl,
+  Input,
+  InputBase,
 } from "@mui/material";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -27,6 +29,19 @@ import { CartStateContext } from "@/provider/CartContext";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CategoryMenu from "@/components/shop/category/CategoryMenu";
 import { formatNumberWithDots } from "@/util";
+import styled from "styled-components";
+
+const BorderlessInput = styled(InputBase)(({ theme }) => ({
+  border: "none",
+  outline: "none",
+  backgroundColor: "transparent",
+  fontSize: "16px",
+  padding: "8px",
+  "&:focus": {
+    outline: "none",
+    border: "none",
+  },
+}));
 
 const ProductHomePage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -110,14 +125,14 @@ const ProductHomePage = () => {
 
   return (
     <div className="w-full h-full min-h-screen flex flex-col items-center justify-start space-y-10 p-2">
-      <div className="flex w-full justify-center items-center space-x-1 bg-white rounded-lg">
+      <div className="flex w-full justify-center align-middle items-center space-x-2 rounded-lg">
         <CategoryMenu
           category={category}
           checked={checked}
           setChecked={setChecked}
         />
-        <FormControl className="w-1/2" variant="outlined">
-          <OutlinedInput
+        <FormControl className="w-1/2 rounded-3xl bg-white px-2">
+          <BorderlessInput
             id="outlined-adornment-search"
             placeholder="Search product..."
             onChange={(e) => setSearchText(e.target.value)}
@@ -149,6 +164,7 @@ const ProductHomePage = () => {
       />
 
       {/* <div className="flex w-full space-x-2"> */}
+      <h1>Products</h1>
       {!uiState?.loading ? (
         <Grid
           container

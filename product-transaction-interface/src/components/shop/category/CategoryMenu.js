@@ -20,12 +20,9 @@ export default function SimpleListMenu({ category, checked, setChecked }) {
 
   return (
     <div>
-      <List
-        component="nav"
-        aria-label="Device settings"
-        sx={{ bgcolor: "background.paper"}}
-      >
+      <List component="nav" aria-label="Device settings">
         <ListItemButton
+          className="rounded-xl transition ease-in-out hover:scale-105"
           id="lock-button"
           aria-haspopup="listbox"
           aria-controls="lock-menu"

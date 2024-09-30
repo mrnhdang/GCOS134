@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { formatNumberWithDots } from "@/util";
 
 const {
   List,
@@ -98,7 +99,9 @@ const ListCartProduct = () => {
             ))}
             <h1 className="flex flex-col items-end self-end text-blue-500 border border-solid border-white p-2 rounded-lg">
               Total:
-              <span className=" text-2xl font-bold">{totalPrice}</span>
+              <span className=" text-2xl font-bold">
+                {formatNumberWithDots(totalPrice)}
+              </span>
             </h1>
           </List>
         </div>

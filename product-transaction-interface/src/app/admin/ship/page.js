@@ -11,12 +11,15 @@ import {
   TableRow,
   Paper,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const ShipListPage = () => {
   const [ships, setShips] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     getShips();
@@ -35,18 +38,19 @@ const ShipListPage = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, height: "100%", minHeight: "100vh" }}>
+      <Typography
+        variant="h3"
+        gutterBottom
+        sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
+      >
+        Ship Management
+      </Typography>
+      <Button onClick={() => router.push("/admin/ship/add")}>Create shipment</Button>
       <Paper
         elevation={3}
         sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}
       >
-        <Typography
-          variant="h3"
-          gutterBottom
-          sx={{ fontWeight: "bold", textAlign: "center", mb: 2 }}
-        >
-          Ship Management
-        </Typography>
         {loading ? (
           <Box
             sx={{

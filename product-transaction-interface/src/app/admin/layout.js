@@ -1,6 +1,6 @@
 "use client";
 
-import AdminLayout from "@/components/layout/admin/AdminLayout";
+import AdminLayout from "@/components/admin/layout/AdminLayout";
 import "../globals.css";
 
 export default function AdminRootLayout({ children }) {

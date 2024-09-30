@@ -35,29 +35,6 @@ const AdminLayout = ({ children }) => {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
-      <AppBar
-        position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
-      >
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Admin Dashboard
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <button
-            onClick={handleLogout}
-            style={{
-              background: "none",
-              border: "none",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
-            <ExitToAppIcon />
-          </button>
-        </Toolbar>
-      </AppBar>
-
       <Drawer
         sx={{
           width: drawerWidth,

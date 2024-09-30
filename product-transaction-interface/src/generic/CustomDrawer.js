@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { CartStateContext } from "@/provider/CartContext";
 import { useRouter } from "next/navigation";
+import { formatNumberWithDots } from "@/util";
 
 export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
   const router = useRouter();
@@ -22,12 +23,10 @@ export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
   const handleChangeProductQuantity = (product, e, index) => {
     const updateQuantity = e.target.value;
     let updateCart = [...cart]; // Replace with your actual cart state variable
+    if (updateQuantity == "0" || !updateQuantity) removeFromCart(product);
 
-    if (updateQuantity === "0" || !updateQuantity) removeFromCart(product);
-
-    if (index > 0 && index < updateCart?.length) {
+    if (index >= 0 && index < updateCart?.length) {
       updateCart[index].quantity = updateQuantity;
-
       setCart(updateCart);
     }
   };
@@ -61,7 +60,7 @@ export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
                     <ListItemText
                       sx={{ width: 260 }}
                       primary={product?.productName}
-                      secondary={product?.price}
+                      secondary={formatNumberWithDots(product?.price)}
                     />
                     <TextField
                       id="outlined-number"
