@@ -19,13 +19,12 @@ const OrderDetailPage = ({ params }) => {
 
   const handleGetOrderDetail = useCallback(async () => {
     try {
-      setUiState({ loading: true });
       setTimeout(async () => {
+        setUiState({ loading: true });
         const res = await axios.get(`http://localhost:8080/api/v1/order/${id}`);
         setOrderDetail(res?.data);
+        setUiState({ loading: false });
       }, 3000);
-
-      setUiState({ loading: false });
     } catch (error) {
       const message = error?.response?.data?.message;
       setUiState({
@@ -48,7 +47,7 @@ const OrderDetailPage = ({ params }) => {
   );
 
   return (
-    <div className="h-full w-full flex flex-col items-center p-2">
+    <div className="h-full w-full min-h-screen flex flex-col items-center p-2">
       {uiState?.success && (
         <Alert color="success" severity="success">
           {uiState?.success}

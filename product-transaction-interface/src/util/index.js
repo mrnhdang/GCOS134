@@ -28,3 +28,11 @@ export function formatMilliseconds(millis) {
 
   return `${hours}:${minutes}:${seconds}`;
 }
+
+export function formatNumberWithDots(number) {
+  return number?.toLocaleString("en-US").replace(/,/g, ".");
+}
+
+export function formatDateTypeArray(date) {
+  return date ? `${date[2]}/${date[1]}/${date[0]}` : "";
+}

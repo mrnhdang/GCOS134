@@ -1,11 +1,14 @@
 "use client";
 
+import CustomSnackbar from "@/generic/CustomSnackbar";
 import { CartStateContext } from "@/provider/CartContext";
+import { formatNumberWithDots } from "@/util";
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
+  Divider,
   Grid,
   TextField,
   Typography,
@@ -16,6 +19,7 @@ import { useContext, useEffect, useState } from "react";
 const ProductDetail = ({ id }) => {
   const [uiState, setUiState] = useState();
   const [product, setProduct] = useState();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const { addToCart } = useContext(CartStateContext);
 
@@ -52,6 +56,10 @@ const ProductDetail = ({ id }) => {
           {uiState?.error}
         </Alert>
       )}
+      <CustomSnackbar
+        openSnackbar={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
+      />
       {uiState?.loading ? (
         <CircularProgress />
       ) : (
@@ -67,7 +75,9 @@ const ProductDetail = ({ id }) => {
             alignItems: "center",
           }}
         >
-          <Grid container spacing={2}>
+          <h1 className="self-start font-bold text-2xl mb-2">PRODUCT DETAIL</h1>
+          <Divider />
+          <Grid container mt={1} spacing={2}>
             {/* Left section: Product Image */}
             <Grid item xs={12} md={6}>
               <img
@@ -86,9 +96,9 @@ const ProductDetail = ({ id }) => {
                 </Typography>
                 <Typography
                   variant="h5"
-                  style={{ marginTop: "1rem", color: "red" }}
+                  style={{ marginTop: "1rem", color: "skyblue" }}
                 >
-                  {product?.price} VND
+                  {formatNumberWithDots(product?.price)} VND
                 </Typography>
                 <TextField
                   fullWidth
@@ -106,7 +116,10 @@ const ProductDetail = ({ id }) => {
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => addToCart(product)}
+              onClick={() => {
+                setOpenSnackbar(true);
+                addToCart(product);
+              }}
             >
               Add to Cart
             </Button>

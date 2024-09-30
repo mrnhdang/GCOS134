@@ -26,6 +26,7 @@ import CustomSnackbar from "@/generic/CustomSnackbar";
 import { CartStateContext } from "@/provider/CartContext";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CategoryMenu from "@/components/shop/category/CategoryMenu";
+import { formatNumberWithDots } from "@/util";
 
 const ProductHomePage = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -194,10 +195,10 @@ const ProductHomePage = () => {
                 />
                 <CardContent>
                   <Typography gutterBottom variant="a" component="div">
-                    {product?.productName || "testing"}
+                    {product?.productName}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {product?.price || 1000000} VND
+                    {formatNumberWithDots(product?.price)} VND
                   </Typography>
                 </CardContent>
                 <CardActions>

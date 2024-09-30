@@ -23,7 +23,7 @@ export default function SimpleListMenu({ category, checked, setChecked }) {
       <List
         component="nav"
         aria-label="Device settings"
-        sx={{ bgcolor: "background.paper" }}
+        sx={{ bgcolor: "background.paper"}}
       >
         <ListItemButton
           id="lock-button"

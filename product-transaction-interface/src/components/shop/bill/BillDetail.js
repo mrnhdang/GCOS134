@@ -1,7 +1,7 @@
 "use client";
 import ProductTable from "@/generic/ProductTable";
 import { CartStateContext } from "@/provider/CartContext";
-import { formatMilliseconds } from "@/util";
+import { formatMilliseconds, formatNumberWithDots } from "@/util";
 import {
   Alert,
   Button,
@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import SuccessModal from "./SuccessModal";
 
 const BillDetail = ({ billId }) => {
   const router = useRouter();
@@ -21,7 +22,8 @@ const BillDetail = ({ billId }) => {
   const [bill, setBill] = useState();
   const [uiState, setUiState] = useState();
   const [payment, setPayment] = useState(0);
-  const [countdown, setCountdown] = useState(20);
+  const [countdown, setCountdown] = useState(30);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleGetBillDetail = async () => {
     setUiState({ loading: true });
@@ -67,9 +69,9 @@ const BillDetail = ({ billId }) => {
         payload
       );
 
-      setUiState({ loading: false, success: "Transaction successfully!!!" });
+      setOpenModal(true);
+      setUiState({ loading: false, success: "Transaction successfully" });
       setCart([]);
-      router.push("/product/successs");
     } catch (error) {
       const message = error?.response?.data?.message;
       setUiState({
@@ -108,9 +110,12 @@ const BillDetail = ({ billId }) => {
         {formatMilliseconds(countdown * 1000)}
       </Fab>
       {uiState?.success && (
-        <Alert color="success" severity="success">
-          {uiState?.success}
-        </Alert>
+        <SuccessModal
+          open={openModal}
+          setOpen={setOpenModal}
+          message={uiState?.success}
+          bill={bill}
+        />
       )}
       {uiState?.error && (
         <Alert color="error" severity="error">
@@ -142,11 +147,7 @@ const BillDetail = ({ billId }) => {
             </div>
             <div className="flex items-stretch justify-between align-middle">
               <h1 className="font-bold">Buyer: </h1>
-              <h1>{bill?.user?.username}</h1>
-            </div>
-            <div className="flex items-stretch justify-between align-middle">
-              <h1 className="font-bold">Email: </h1>
-              <h1>{bill?.user?.email}</h1>
+              <h1>{bill?.username}</h1>
             </div>
           </div>
 
@@ -165,7 +166,7 @@ const BillDetail = ({ billId }) => {
           <div className="flex items-stretch justify-between align-middle p-1 my-10">
             <div className="w-full">
               <h1 className="text-gray-400">
-                Your balance: {bill?.user?.balance}
+                Your payment: {bill?.user?.balance}
               </h1>
               <TextField
                 label="Enter money"
@@ -175,17 +176,19 @@ const BillDetail = ({ billId }) => {
             </div>
             <h1 className="flex flex-col items-end text-blue-500">
               Total:
-              <span className="text-2xl font-bold">{bill?.totalPrice}</span>
+              <span className="text-2xl font-bold">{formatNumberWithDots(bill?.totalPrice)}đ</span>
             </h1>
           </div>
         </Paper>
-        <Button
-          variant="outlined"
-          onClick={() => handleSubmitPayment()}
-          fullWidth
-        >
-          Submit Payment
-        </Button>
+        {bill?.status !== "PAID" && (
+          <Button
+            variant="outlined"
+            onClick={() => handleSubmitPayment()}
+            fullWidth
+          >
+            Submit Payment
+          </Button>
+        )}
       </div>
     </div>
   );

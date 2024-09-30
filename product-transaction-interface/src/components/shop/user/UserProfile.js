@@ -20,7 +20,7 @@ const UserProfile = () => {
     uiState,
   } = useContext(AuthStateContext);
   return (
-    <div className="h-full min-h-screen">
+    <div className="h-full min-h-screen p-2">
       <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}

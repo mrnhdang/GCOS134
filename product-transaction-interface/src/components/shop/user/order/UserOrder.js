@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Grid,
 } from "@mui/material";
+import { formatDateTypeArray } from "@/util";
 
 const UserOrder = () => {
   const id = localStorage.getItem("id"); // Get the user ID from the URL
@@ -107,7 +108,9 @@ const UserOrder = () => {
                       <TableCell>
                         <Typography variant="h6">Purchase Date</Typography>
                       </TableCell>
-                      <TableCell>{order?.purchaseDate}</TableCell>
+                      <TableCell>
+                        {formatDateTypeArray(order?.purchaseDate)}
+                      </TableCell>
                     </TableRow>
                     {/* Status */}
                     <TableRow>
