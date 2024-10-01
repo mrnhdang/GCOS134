@@ -17,8 +17,6 @@ import {
 import axios from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import { TrendingUp } from "@mui/icons-material";
-import { Finger_Paint } from "next/font/google";
 
 const UserPage = () => {
   const [userList, setUserList] = useState([]);
