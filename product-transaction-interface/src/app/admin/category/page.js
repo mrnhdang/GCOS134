@@ -16,12 +16,11 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import { useRouter } from "next/navigation";
+import CategoryDialog from "@/components/admin/category/CategoryDialog";
 
 const CategoryPage = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     getCategoryList();
@@ -42,8 +41,7 @@ const CategoryPage = () => {
   const deleteCategory = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/v1/category/${id}`);
-      setBills(listBills.filter((category) => category.id !== id));
-      alert("Category deleted successfully");
+      getCategoryList();
     } catch (error) {
       console.error("Error deleting category:", error);
       alert("Failed to delete category");
@@ -64,12 +62,10 @@ const CategoryPage = () => {
         >
           Category Management
         </Typography>
-        <Button
-          variant="contained"
-          onClick={() => router.push("/admin/category/add")}
-        >
-          Create
-        </Button>
+        <CategoryDialog
+          setLoading={setLoading}
+          getCategoryList={getCategoryList}
+        />
         {loading ? (
           <Box
             sx={{

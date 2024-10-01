@@ -15,4 +15,6 @@ public interface OrderRepository extends MongoRepository<Order, String> {
 
     @Query("{ 'purchaseDate': { $gte: ?0, $lte: ?1 } }")
     List<Order> searchOrder(LocalDate from, LocalDate to);
+
+    List<Order> findByShip(String ship);
 }

@@ -55,7 +55,7 @@ public class OrderService {
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map((order) -> OrderGetDetailDto.builder()
                 .purchaseDate(order.getPurchaseDate())
-                .billId(order.getBill().getId())
+                .billId(order.getBill() != null ? order.getBill().getId() : null)
                 .id(order.getId())
                 .user(order.getUser())
                 .status(order.getStatus())
@@ -147,7 +147,7 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
-    public void deleteAllOrder(){
+    public void deleteAllOrder() {
         orderDetailRepository.deleteAll();
         orderRepository.deleteAll();
     }

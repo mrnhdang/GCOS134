@@ -24,8 +24,6 @@ const ShipForm = () => {
   const [uiState, setUiState] = useState();
   const router = useRouter();
 
-  const userId = localStorage.getItem("id");
-
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -38,17 +36,15 @@ const ShipForm = () => {
 
     setChecked(newChecked);
   };
-  console.log(checked);
 
   // Handle form submission
   const handleCreateShip = async (e) => {
     setUiState({ loading: true });
-
+    const userId = localStorage.getItem("id");
     const requestBody = {
       userId,
       orders: checked,
     };
-    console.log(requestBody);
 
     try {
       await axios.post("http://localhost:8080/api/v1/ship", requestBody);
@@ -60,8 +56,6 @@ const ShipForm = () => {
         loading: false,
         error: message,
       });
-    } finally {
-      setUiState({ loading: false });
     }
   };
 
@@ -70,14 +64,13 @@ const ShipForm = () => {
       setUiState({ loading: true });
       const res = await axios.get("http://localhost:8080/api/v1/order");
       setOrderList(res?.data);
-    } catch (e) {
+      setUiState({ loading: false });
+    } catch (error) {
       const message = error?.response?.data?.message;
       setUiState({
         loading: false,
         error: message,
       });
-    } finally {
-      setUiState({ loading: false });
     }
   };
 
@@ -86,7 +79,7 @@ const ShipForm = () => {
   }, []);
 
   return (
-    <div className="h-full min-h-screen p-2 flex flex-col items-center justify-start space-y-1">
+    <div className="h-full min-h-screen p-4 flex flex-col items-center justify-start space-y-1">
       <Typography
         variant="h3"
         gutterBottom
@@ -95,12 +88,9 @@ const ShipForm = () => {
         Create Shipping for Order
       </Typography>
       {uiState?.success && (
-        <SuccessModal
-          open={openModal}
-          setOpen={setOpenModal}
-          message={uiState?.success}
-          bill={bill}
-        />
+        <Alert color="success" severity="success">
+          {uiState?.success}
+        </Alert>
       )}
       {uiState?.error && (
         <Alert color="error" severity="error">
@@ -122,7 +112,7 @@ const ShipForm = () => {
           className="space-y-2"
         >
           <h1 className="font-bold text-xl">Select Orders:</h1>
-          <div className="border border-solid rounded-lg max-h-[500px] overflow-y-scroll p-1">
+          <div className="border border-solid rounded-lg max-h-[500px] overflow-y-scroll p-1 w-full">
             {orderList?.map((order, index) => {
               const labelId = `checkbox-list-label-${index}`;
 

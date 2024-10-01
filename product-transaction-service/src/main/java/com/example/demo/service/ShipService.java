@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,13 +68,21 @@ public class ShipService {
     }
 
     public Ship createShip(ShipPostDto dto) {
+        List<Order> orders = new ArrayList<>();
         if (dto.orders().isEmpty()) throw new InvalidInputParameter("Field 'orders' must not empty.");
         dto.orders().forEach(orderId -> {
-            orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
+            Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
+            if (order.getShip() != null && order.getShip().getId() != null) {
+                throw new InvalidInputParameter("Order with id " + orderId + " is already in the shipping queue.");
+            }
+            orders.add(order);
         });
         User user = userRepository.findById(dto.userId()).orElseThrow(() -> new NotFoundException("User with id " + dto.userId() + " doesn't exist."));
-        List<Order> orders = orderRepository.findAllById(dto.orders());
         Ship newShip = Ship.builder().status(OrderStatus.PROCESSING).user(user).orders(orders).build();
+        orders.forEach(order -> {
+            order.setShip(newShip);
+            orderRepository.save(order);
+        });
         return shipRepository.save(newShip);
     }
 
@@ -87,6 +96,11 @@ public class ShipService {
 
     public void deleteOrderShipping(String shipId) {
         checkExistShip(shipId);
+        List<Order> orders = orderRepository.findByShip(shipId);
+        orders.forEach(order -> {
+            order.setShip(null);
+            orderRepository.save(order);
+        });
         shipRepository.deleteById(shipId);
     }
 }

@@ -25,10 +25,10 @@ public class Order {
     @DocumentReference(lazy = true)
     private Ship ship;
 
-    @DocumentReference(lazy = true)
+    @DocumentReference
     private User user;
 
-    @DocumentReference(lazy = true)
+    @DocumentReference
     private Bill bill;
 
     @DocumentReference(lazy = true)

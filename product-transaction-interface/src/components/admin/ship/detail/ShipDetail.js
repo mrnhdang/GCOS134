@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ShipDetail = ({ id }) => {
   const [ship, setShip] = useState();
@@ -57,7 +57,7 @@ const ShipDetail = ({ id }) => {
   useEffect(() => {
     handleGetShipDetail();
   }, []);
-
+  console.log(formatDateTypeArray(ship?.receivedDate));
   return (
     <div className="h-full min-h-screen p-2 space-y-2">
       {uiState?.error && (
@@ -65,7 +65,9 @@ const ShipDetail = ({ id }) => {
           {uiState?.error}
         </Alert>
       )}
-      <h1 className="font-bold text-2xl mb-12">Shipping ID: {ship?.id}</h1>
+      <h1 className="font-bold text-2xl mb-12 uppercase">
+        Shipping ID: {ship?.id}
+      </h1>
       {uiState?.loading && <CircularProgress />}
 
       {/* Shipping Info */}
@@ -77,7 +79,7 @@ const ShipDetail = ({ id }) => {
           <Grid item xs={8}>
             <h1>
               {" "}
-              <CustomStatus status={bill?.status} />
+              <CustomStatus status={ship?.status} />
             </h1>
           </Grid>
 
@@ -85,7 +87,7 @@ const ShipDetail = ({ id }) => {
             <h1 variant="h6">Received Date:</h1>
           </Grid>
           <Grid item xs={8}>
-            <h1>{formatDateTypeArray(ship?.receivedDate) | "Not received"}</h1>
+            <h1>{formatDateTypeArray(ship?.receivedDate) || "Not received"}</h1>
           </Grid>
           <Grid item xs={4}>
             <h1>Name:</h1>
@@ -109,12 +111,12 @@ const ShipDetail = ({ id }) => {
         className="flex flex-col items-center align-middle justify-start rounded-lg"
       >
         <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-          Orders
+          ORDERS
         </Typography>
         {ship?.orders?.map((order) => {
           return (
             <div className="my-10 flex flex-col justify-center w-1/2">
-              <h1>Order: {order?.id}</h1>
+              <h1 className="font-bold">Order: {order?.id}</h1>
               <ProductTable products={order?.products} />
               <Divider />
             </div>
