@@ -22,15 +22,15 @@ public class Order {
     private LocalDate purchaseDate;
     private OrderStatus status;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private Ship ship;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private User user;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private Bill bill;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private List<Product> products;
 }

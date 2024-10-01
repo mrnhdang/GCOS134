@@ -34,5 +34,5 @@ export function formatNumberWithDots(number) {
 }
 
 export function formatDateTypeArray(date) {
-  return date ? `${date[2]}/${date[1]}/${date[0]}` : "";
+  return date ? `${date[1]}/${date[2]}/${date[0]}` : undefined;
 }

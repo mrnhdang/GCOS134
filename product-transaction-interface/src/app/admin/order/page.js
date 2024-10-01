@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import CustomStatus from "@/generic/CustomStatus";
 
 const OrderPage = () => {
   const router = useRouter();
@@ -105,7 +106,9 @@ const OrderPage = () => {
                           ? new Date(order?.purchaseDate).toLocaleDateString()
                           : "UNPAID"}
                       </TableCell>
-                      <TableCell>{order?.status}</TableCell>
+                      <TableCell>
+                        <CustomStatus status={order?.status} />
+                      </TableCell>
                       <TableCell>{order?.user?.username}</TableCell>
                       <TableCell>{order?.billId}</TableCell>
                       <TableCell>

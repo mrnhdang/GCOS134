@@ -12,18 +12,18 @@ import {
   Paper,
   CircularProgress,
   Button,
+  IconButton,
 } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import CustomStatus from "@/generic/CustomStatus";
 
 const ShipListPage = () => {
   const [ships, setShips] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
-  useEffect(() => {
-    getShips();
-  }, []);
 
   const getShips = async () => {
     try {
@@ -37,11 +37,28 @@ const ShipListPage = () => {
     }
   };
 
+  const handleDeleteShip = async (id) => {
+    try {
+      setLoading(true);
+      await axios.delete(`http://localhost:8080/api/v1/ship/${id}`);
+      await getShips();
+    } catch (error) {
+      console.error("Error fetching shipments:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getShips();
+  }, []);
+
   return (
     <Box sx={{ p: 3, height: "100%", minHeight: "100vh" }}>
       <Paper
         elevation={3}
         sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}
+        className="space-y-1"
       >
         {" "}
         <Typography
@@ -51,8 +68,11 @@ const ShipListPage = () => {
         >
           Ship Management
         </Typography>
-        <Button onClick={() => router.push("/admin/ship/add")}>
-          Create shipment
+        <Button
+          variant="contained"
+          onClick={() => router.push("/admin/ship/add")}
+        >
+          Create
         </Button>
         {loading ? (
           <Box
@@ -81,6 +101,7 @@ const ShipListPage = () => {
                   <TableCell sx={{ fontWeight: "bold" }}>
                     Received Date
                   </TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -91,12 +112,28 @@ const ShipListPage = () => {
                       sx={{ "&:hover": { backgroundColor: "#f0f0f0" } }}
                     >
                       <TableCell>{ship?.id}</TableCell>
-                      <TableCell>{ship?.status}</TableCell>
+                      <TableCell>
+                        <CustomStatus status={ship?.status} />
+                      </TableCell>
                       <TableCell>{ship?.user?.username}</TableCell>
                       <TableCell>
                         {ship?.receivedDate
                           ? new Date(ship?.receivedDate).toLocaleDateString()
-                          : "UNPAID"}
+                          : "Not received"}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => router.push(`/admin/ship/${ship?.id}`)}
+                          sx={{ color: "#1976d2" }}
+                        >
+                          <EditOutlinedIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteShip(ship?.id)}
+                          sx={{ color: "#d32f2f" }}
+                        >
+                          <DeleteOutlinedIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))

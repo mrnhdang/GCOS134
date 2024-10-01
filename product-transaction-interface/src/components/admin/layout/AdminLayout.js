@@ -47,7 +47,6 @@ const AdminLayout = ({ children }) => {
         variant="permanent"
         anchor="left"
       >
-        <Toolbar />
         <List>
           <ListItem button component={Link} href="/admin">
             <DashboardIcon sx={{ mr: 2 }} />
@@ -88,7 +87,6 @@ const AdminLayout = ({ children }) => {
           width: `calc(100% - ${drawerWidth}px)`,
         }}
       >
-        <Toolbar />
         {children}
       </Box>
     </Box>

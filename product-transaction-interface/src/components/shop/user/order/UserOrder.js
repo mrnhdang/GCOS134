@@ -13,6 +13,7 @@ import {
   Grid,
 } from "@mui/material";
 import { formatDateTypeArray } from "@/util";
+import CustomStatus from "@/generic/CustomStatus";
 
 const UserOrder = () => {
   const id = localStorage.getItem("id"); // Get the user ID from the URL
@@ -117,7 +118,10 @@ const UserOrder = () => {
                       <TableCell>
                         <Typography variant="h6">Order Status</Typography>
                       </TableCell>
-                      <TableCell>{order?.status}</TableCell>
+                      <TableCell>
+                        {" "}
+                        <CustomStatus status={order?.status} />
+                      </TableCell>
                     </TableRow>
                     {/* Bill ID */}
                     <TableRow>

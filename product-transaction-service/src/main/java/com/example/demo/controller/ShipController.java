@@ -26,8 +26,8 @@ public class ShipController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ship> getShippingDetail(@PathVariable("id") String shipId) {
-        return ResponseEntity.ok(shipService.checkExistShip(shipId));
+    public ResponseEntity<ShipDetailDto> getShippingDetail(@PathVariable("id") String shipId) {
+        return ResponseEntity.ok(shipService.getShipDetail(shipId));
     }
 
     @GetMapping("/search")

@@ -68,7 +68,9 @@ const BillDetailPage = ({ params }) => {
         ) : bill ? (
           <Box>
             <Typography variant="h6">Customer: {bill?.username}</Typography>
-            <Typography variant="h6">Status: {bill?.status}</Typography>
+            <Typography variant="h6">
+              Status: <CustomStatus status={bill?.status} />
+            </Typography>
             <Typography variant="h6">
               Total Price: {bill?.totalPrice} VND
             </Typography>

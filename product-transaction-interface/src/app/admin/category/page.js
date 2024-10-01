@@ -12,14 +12,16 @@ import {
   Paper,
   IconButton,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import axios from "axios";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { useRouter } from "next/navigation";
 
 const CategoryPage = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     getCategoryList();
@@ -49,10 +51,11 @@ const CategoryPage = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, height: "100%", minHeight: "100vh" }}>
       <Paper
         elevation={3}
         sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}
+        className="space-y-2"
       >
         <Typography
           variant="h3"
@@ -61,6 +64,12 @@ const CategoryPage = () => {
         >
           Category Management
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => router.push("/admin/category/add")}
+        >
+          Create
+        </Button>
         {loading ? (
           <Box
             sx={{

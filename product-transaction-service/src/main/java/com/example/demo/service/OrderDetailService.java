@@ -2,10 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderDetail;
-import com.example.demo.entity.OrderStatus;
 import com.example.demo.repository.OrderDetailRepository;
-import com.example.demo.repository.OrderRepository;
-import com.example.demo.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +22,7 @@ public class OrderDetailService {
         // update the order details
         if (!orderDetailList.isEmpty()) {
             orderDetailList.forEach(orderDetail -> {
-                if (OrderStatus.DONE.equals(order.getStatus())) {
-                    orderDetail.setTotalAmount(orderDetail.getHoldAmount());
-                }
+                orderDetail.setTotalAmount(orderDetail.getHoldAmount());
                 orderDetails.add(orderDetail);
             });
         }

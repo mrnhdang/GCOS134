@@ -23,9 +23,9 @@ public class Ship {
     private OrderStatus status;
     private LocalDate receivedDate;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private User user;
 
-    @DocumentReference
+    @DocumentReference(lazy = true)
     private List<Order> orders;
 }

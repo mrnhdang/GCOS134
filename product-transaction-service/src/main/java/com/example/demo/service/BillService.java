@@ -37,7 +37,7 @@ public class BillService {
 
         return bills.stream().map(bill -> BillGetDetailDto.builder()
                 .id(bill.getId())
-                .username(bill.getOrder().getUser().getUsername())
+                .username(bill.getOrder().getUser() != null ? bill.getOrder().getUser().getUsername() : "")
                 .orderId(bill.getOrder().getId())
                 .payDate(bill.getPayDate())
                 .status(bill.getStatus())
@@ -108,12 +108,12 @@ public class BillService {
 
         BigDecimal updateBalance = user.getBalance().subtract(dto.payPrice());
         user.setBalance(updateBalance);
+        userRepository.save(user);
 
         // update order details and update inventory
         orderDetailService.addOrUpdateOrderDetail(new ArrayList<>(), bill.getOrder());
 
         // save
-        userRepository.save(user);
         billRepository.save(bill);
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.OrderGetDetailDto;
 import com.example.demo.dto.ShipDetailDto;
 import com.example.demo.dto.ShipPostDto;
 import com.example.demo.entity.Order;
@@ -25,6 +26,12 @@ public class ShipService {
     private ShipRepository shipRepository;
     private OrderRepository orderRepository;
     private UserRepository userRepository;
+    private OrderService orderService;
+
+    public Ship checkExistShip(String shipId) {
+        return shipRepository.findById(shipId).orElseThrow(() ->
+                new NotFoundException("Order's Shipping with id " + shipId + " doesn't exist."));
+    }
 
     public List<ShipDetailDto> getAllShip() {
         List<Ship> ships = shipRepository.findAll();
@@ -38,13 +45,25 @@ public class ShipService {
         ).toList();
     }
 
-    public List<Ship> searchShippingOrder(LocalDate from, LocalDate to) {
-        return shipRepository.searchShippingOrder(from, to);
+    public ShipDetailDto getShipDetail(String id) {
+        Ship ship = checkExistShip(id);
+        return ShipDetailDto.builder()
+                .id(ship.getId())
+                .receivedDate(ship.getReceivedDate())
+                .user(ship.getUser())
+                .status(ship.getStatus())
+                .orders(ship.getOrders().stream().map(order ->
+                        OrderGetDetailDto.builder()
+                                .id(order.getId())
+                                .status(order.getStatus())
+                                .products(orderService.mapToProductDto(order.getProducts(), order.getId()))
+                                .purchaseDate(order.getPurchaseDate())
+                                .build()).toList())
+                .build();
     }
 
-    public Ship checkExistShip(String shipId) {
-        return shipRepository.findById(shipId).orElseThrow(() ->
-                new NotFoundException("Order's Shipping with id " + shipId + " doesn't exist."));
+    public List<Ship> searchShippingOrder(LocalDate from, LocalDate to) {
+        return shipRepository.searchShippingOrder(from, to);
     }
 
     public Ship createShip(ShipPostDto dto) {
@@ -62,9 +81,6 @@ public class ShipService {
         Ship ship = checkExistShip(shipId);
         ship.setStatus(OrderStatus.DONE);
         ship.setReceivedDate(LocalDate.now());
-        ship.getOrders().forEach(order -> {
-            order.setStatus(OrderStatus.DONE);
-        });
         orderRepository.saveAll(ship.getOrders());
         return shipRepository.save(ship);
     }

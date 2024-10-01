@@ -43,6 +43,7 @@ public class OrderService {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .orderAmount(orderDetail.getTotalAmount())
+                    .holdAmount(orderDetail.getHoldAmount())
                     .image(product.getImage())
                     .build();
             orderProductDtos.add(dto);
@@ -116,7 +117,11 @@ public class OrderService {
             }
             Product orderProduct = productRepository.findById(orderProductDto.getProductId())
                     .orElseThrow(() -> new NotFoundException("Product with id " + orderProductDto.getProductId() + " doesn't exist."));
-            OrderDetail orderDetail = OrderDetail.builder().product(orderProduct).holdAmount(orderProductDto.getOrderAmount()).build();
+            OrderDetail orderDetail = OrderDetail.builder()
+                    .product(orderProduct)
+                    .holdAmount(orderProductDto.getOrderAmount())
+                    .totalAmount(0)
+                    .build();
             products.add(orderProduct);
             orderDetails.add(orderDetail);
         });

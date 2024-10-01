@@ -15,6 +15,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
+import CustomStatus from "@/generic/CustomStatus";
 
 const OrderDetailPage = ({ params }) => {
   const [order, setOrder] = useState(null);
@@ -83,7 +84,9 @@ const OrderDetailPage = ({ params }) => {
                 ? new Date(order?.purchaseDate).toLocaleDateString()
                 : "UNPAID"}
             </Typography>
-            <Typography variant="h6">Status: {order?.status}</Typography>
+            <Typography variant="h6">
+              Status: <CustomStatus status={order?.status} />
+            </Typography>
             <Typography variant="h6">Bill ID: {order?.billId}</Typography>
 
             <TableContainer component={Paper} sx={{ mt: 3 }}>

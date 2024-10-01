@@ -16,5 +16,5 @@ public class ShipDetailDto {
     private OrderStatus status;
     private LocalDate receivedDate;
     private User user;
-    private List<Order> orders;
+    private List<OrderGetDetailDto> orders;
 }

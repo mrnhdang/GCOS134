@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import CustomStatus from "@/generic/CustomStatus";
 
 const BillListPage = () => {
   const [listBills, setBills] = useState([]);
@@ -99,7 +100,9 @@ const BillListPage = () => {
                       sx={{ "&:hover": { backgroundColor: "#f0f0f0" } }}
                     >
                       <TableCell>{bill?.id}</TableCell>
-                      <TableCell>{bill?.status}</TableCell>
+                      <TableCell>
+                        <CustomStatus status={bill?.status} />
+                      </TableCell>
                       <TableCell>{bill?.orderId}</TableCell>
                       <TableCell>{bill?.totalPrice} VND</TableCell>
                       <TableCell>

@@ -16,11 +16,13 @@ import {
 
 import axios from "axios";
 import { formatDateTypeArray } from "@/util";
+import { useRouter } from "next/navigation";
 
 const ShipForm = () => {
   const [orderList, setOrderList] = useState([]);
   const [checked, setChecked] = useState([]);
   const [uiState, setUiState] = useState();
+  const router = useRouter();
 
   const userId = localStorage.getItem("id");
 
@@ -49,11 +51,8 @@ const ShipForm = () => {
     console.log(requestBody);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/ship",
-        requestBody
-      );
-
+      await axios.post("http://localhost:8080/api/v1/ship", requestBody);
+      router.push("/admin/ship");
       setUiState({ loading: false, success: "Create Ship successfully" });
     } catch (error) {
       const message = error?.response?.data?.message;
@@ -123,7 +122,7 @@ const ShipForm = () => {
           className="space-y-2"
         >
           <h1 className="font-bold text-xl">Select Orders:</h1>
-          <div className="border border-solid rounded-lg max-h-[500px] overflow-scroll p-1">
+          <div className="border border-solid rounded-lg max-h-[500px] overflow-y-scroll p-1">
             {orderList?.map((order, index) => {
               const labelId = `checkbox-list-label-${index}`;
 
@@ -150,7 +149,7 @@ const ShipForm = () => {
                         justifyContent: "center",
                       }}
                       id={labelId}
-                      primary={`${order?.id}-${formatDateTypeArray(order?.purchaseDate)}-${order?.user?.username}`}
+                      primary={`${order?.id} - ${formatDateTypeArray(order?.purchaseDate)} - ${order?.user?.username}`}
                     />
                   </ListItemButton>
                 </ListItem>
