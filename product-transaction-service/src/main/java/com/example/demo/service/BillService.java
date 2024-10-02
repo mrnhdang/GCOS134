@@ -62,6 +62,7 @@ public class BillService {
                     .price(product.getPrice())
                     .orderAmount(orderDetail.getTotalAmount())
                     .holdAmount(orderDetail.getHoldAmount())
+                    .categoryName(product.getCategory().getCategoryName())
                     .build();
             orderProductDtos.add(dto);
         });

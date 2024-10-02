@@ -115,42 +115,14 @@ export default function AddProductForm() {
             </Select>
           </FormControl>
 
-          <label htmlFor="image-upload" className="w-full">
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "2px dashed #ccc",
-                borderRadius: 2,
-                height: "150px",
-                cursor: "pointer",
-              }}
-            >
-              {image ? (
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="Product"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                  }}
-                />
-              ) : (
-                <Typography variant="body2" color="textSecondary">
-                  Upload Image
-                </Typography>
-              )}
-            </Box>
-            <input
-              id="image-upload"
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleImageChange}
-            />
-          </label>
+          <TextField
+            label="Image Url"
+            variant="outlined"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            required
+            fullWidth
+          />
 
           <Button
             onClick={() => handleAddProduct()}

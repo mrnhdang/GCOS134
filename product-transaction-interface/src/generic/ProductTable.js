@@ -43,7 +43,7 @@ const ProductTable = (products) => {
                 {product?.productName}
               </NoLineTableCell>
               <NoLineTableCell align="right">
-                {product.category || "Unspecify"}
+                {product.categoryName || "Unspecify"}
               </NoLineTableCell>
               <NoLineTableCell align="right">
                 {product?.holdAmount}

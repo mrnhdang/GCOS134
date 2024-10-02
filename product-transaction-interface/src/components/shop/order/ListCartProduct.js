@@ -13,14 +13,18 @@ const {
   IconButton,
   Button,
   Paper,
+  CircularProgress,
+  Alert,
 } = require("@mui/material");
 
 const ListCartProduct = () => {
   const { cart, removeFromCart } = useContext(CartStateContext);
+  const [uiState, setUiState] = useState({ loading: false });
   const router = useRouter();
 
   const handlePlaceOrder = async () => {
     try {
+      setUiState({ loading: true });
       const payload = {
         userId: localStorage.getItem("id"),
         products: cart?.map((product) => ({
@@ -36,7 +40,11 @@ const ListCartProduct = () => {
       );
       router.push(`/product/order/${res?.data?.id}`);
     } catch (error) {
-      console.log(error);
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
     }
   };
 
@@ -60,6 +68,12 @@ const ListCartProduct = () => {
       <div className="w-3/5 flex flex-col items-center gap-1">
         <div className="flex flex-col justify-center align-middle items-center border border-solid border-white w-full bg-gray-200 rounded-lg p-4 mb-1">
           <h1 className="self-start font-bold text-2xl mb-2">CART</h1>
+          {uiState?.loading && <CircularProgress />}
+          {uiState?.error && (
+            <Alert severity="error" color="error">
+              {uiState?.error}
+            </Alert>
+          )}
           <List
             sx={{
               width: "fit-content",
@@ -105,16 +119,17 @@ const ListCartProduct = () => {
             </h1>
           </List>
         </div>
-
-        <Button
-          variant="outlined"
-          fullWidth
-          onClick={() => {
-            handlePlaceOrder();
-          }}
-        >
-          Place Order
-        </Button>
+        {cart?.length > 0 && (
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => {
+              handlePlaceOrder();
+            }}
+          >
+            Place Order
+          </Button>
+        )}
       </div>
     </div>
   );

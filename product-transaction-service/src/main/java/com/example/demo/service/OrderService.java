@@ -3,11 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.OrderGetDetailDto;
 import com.example.demo.dto.OrderPostDto;
 import com.example.demo.dto.OrderProductDto;
-import com.example.demo.entity.Order;
-import com.example.demo.entity.OrderDetail;
-import com.example.demo.entity.OrderStatus;
-import com.example.demo.entity.Product;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.*;
@@ -27,6 +23,7 @@ public class OrderService {
     private UserRepository userRepository;
     private ProductRepository productRepository;
     private OrderDetailRepository orderDetailRepository;
+    private InventoryRepository inventoryRepository;
     private OrderDetailService orderDetailService;
 
     public Order checkExistOrder(String orderId) {
@@ -45,6 +42,7 @@ public class OrderService {
                     .orderAmount(orderDetail.getTotalAmount())
                     .holdAmount(orderDetail.getHoldAmount())
                     .image(product.getImage())
+                    .categoryName(product.getCategory().getCategoryName())
                     .build();
             orderProductDtos.add(dto);
         });
@@ -117,6 +115,14 @@ public class OrderService {
             }
             Product orderProduct = productRepository.findById(orderProductDto.getProductId())
                     .orElseThrow(() -> new NotFoundException("Product with id " + orderProductDto.getProductId() + " doesn't exist."));
+            Inventory inventory = inventoryRepository.findByProduct(orderProductDto.getProductId());
+            if (inventory == null) {
+                throw new NotFoundException("Inventory " + orderProductDto.getProductId() + " doesn't exist.");
+            } else if (inventory.getCurrentQuantity() <= 0) {
+                throw new InvalidInputParameter(orderProductDto.getProductName() + " is out of stock.");
+            } else if (orderProductDto.getOrderAmount() > inventory.getCurrentQuantity()) {
+                throw new InvalidInputParameter(orderProductDto.getProductName() + " is not enough in stock.");
+            }
             OrderDetail orderDetail = OrderDetail.builder()
                     .product(orderProduct)
                     .holdAmount(orderProductDto.getOrderAmount())

@@ -68,68 +68,76 @@ const ShipDetail = ({ id }) => {
       <h1 className="font-bold text-2xl mb-12 uppercase">
         Shipping ID: {ship?.id}
       </h1>
-      {uiState?.loading && <CircularProgress />}
+      {uiState?.loading ? (
+        <CircularProgress />
+      ) : (
+        <div className="space-y-2">
+          {" "}
+          {/* Shipping Info */}
+          <Box mb={4}>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <h1>Status:</h1>
+              </Grid>
+              <Grid item xs={8}>
+                <h1>
+                  {" "}
+                  <CustomStatus status={ship?.status} />
+                </h1>
+              </Grid>
 
-      {/* Shipping Info */}
-      <Box mb={4}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <h1>Status:</h1>
-          </Grid>
-          <Grid item xs={8}>
-            <h1>
-              {" "}
-              <CustomStatus status={ship?.status} />
-            </h1>
-          </Grid>
+              <Grid item xs={4}>
+                <h1 variant="h6">Received Date:</h1>
+              </Grid>
+              <Grid item xs={8}>
+                <h1>
+                  {formatDateTypeArray(ship?.receivedDate) || "Not received"}
+                </h1>
+              </Grid>
+              <Grid item xs={4}>
+                <h1>Name:</h1>
+              </Grid>
+              <Grid item xs={8}>
+                <h1>{ship?.user?.username}</h1>
+              </Grid>
 
-          <Grid item xs={4}>
-            <h1 variant="h6">Received Date:</h1>
-          </Grid>
-          <Grid item xs={8}>
-            <h1>{formatDateTypeArray(ship?.receivedDate) || "Not received"}</h1>
-          </Grid>
-          <Grid item xs={4}>
-            <h1>Name:</h1>
-          </Grid>
-          <Grid item xs={8}>
-            <h1>{ship?.user?.username}</h1>
-          </Grid>
-
-          <Grid item xs={4}>
-            <h1>Email:</h1>
-          </Grid>
-          <Grid item xs={8}>
-            <h1>{ship?.user?.email}</h1>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {/* Orders Info */}
-      <Box
-        component={Paper}
-        className="flex flex-col items-center align-middle justify-start rounded-lg"
-      >
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-          ORDERS
-        </Typography>
-        {ship?.orders?.map((order) => {
-          return (
-            <div className="my-10 flex flex-col justify-center w-1/2">
-              <h1 className="font-bold">Order: {order?.id}</h1>
-              <ProductTable products={order?.products} />
-              <Divider />
-            </div>
-          );
-        })}
-      </Box>
-      <Button
-        variant="outlined"
-        className="w-full"
-        onClick={() => handleConfirmShip()}
-      >
-        Confirm ship order
-      </Button>
+              <Grid item xs={4}>
+                <h1>Email:</h1>
+              </Grid>
+              <Grid item xs={8}>
+                <h1>{ship?.user?.email}</h1>
+              </Grid>
+            </Grid>
+          </Box>
+          {/* Orders Info */}
+          <Box
+            component={Paper}
+            className="flex flex-col items-center align-middle justify-start rounded-lg"
+          >
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
+              ORDERS
+            </Typography>
+            {ship?.orders?.map((order) => {
+              return (
+                <div className="my-10 flex flex-col justify-center w-1/2">
+                  <h1 className="font-bold">Order: {order?.id}</h1>
+                  <ProductTable products={order?.products} />
+                  <Divider />
+                </div>
+              );
+            })}
+          </Box>
+          {ship?.status !== "DONE" && (
+            <Button
+              variant="outlined"
+              className="w-full"
+              onClick={() => handleConfirmShip()}
+            >
+              Confirm ship order
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

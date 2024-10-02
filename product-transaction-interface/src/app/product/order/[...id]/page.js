@@ -20,8 +20,8 @@ const OrderDetailPage = ({ params }) => {
 
   const handleGetOrderDetail = useCallback(async () => {
     try {
+      setUiState({ loading: true });
       setTimeout(async () => {
-        setUiState({ loading: true });
         const res = await axios.get(`http://localhost:8080/api/v1/order/${id}`);
         setOrderDetail(res?.data);
         setUiState({ loading: false });

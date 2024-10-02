@@ -4,18 +4,14 @@ import com.example.demo.dto.ProductPostDto;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Inventory;
 import com.example.demo.entity.Product;
-import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.ProductRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.util.Optionals;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
