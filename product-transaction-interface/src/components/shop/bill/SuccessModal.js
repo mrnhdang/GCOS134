@@ -65,11 +65,7 @@ export default function SuccessModal({ open, message, bill }) {
               </div>
             </Typography>
           </div>
-          <Button
-            sx={{ p: 2 }}
-            onClick={() => router.push("/product")}
-            fullWidth
-          >
+          <Button sx={{ p: 2 }} onClick={() => router.push("/shop")} fullWidth>
             Countinue to buy
           </Button>
         </Box>

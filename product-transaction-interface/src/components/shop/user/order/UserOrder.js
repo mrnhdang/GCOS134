@@ -102,7 +102,14 @@ const UserOrder = () => {
                       <TableCell>
                         <Typography variant="h6">Order ID</Typography>
                       </TableCell>
-                      <TableCell>{order?.id}</TableCell>
+                      <TableCell>
+                        <a
+                          className="text-blue-500 hover:underline"
+                          href={`/shop/order/${order?.id}`}
+                        >
+                          {order?.id}
+                        </a>
+                      </TableCell>
                     </TableRow>
                     {/* Purchase Date */}
                     <TableRow>
@@ -128,7 +135,14 @@ const UserOrder = () => {
                       <TableCell>
                         <Typography variant="h6">Bill ID</Typography>
                       </TableCell>
-                      <TableCell>{order?.billId}</TableCell>
+                      <TableCell>
+                        <a
+                          className="text-blue-500 hover:underline"
+                          href={`/shop/bill/${order?.billId}`}
+                        >
+                          {order?.billId}
+                        </a>
+                      </TableCell>
                     </TableRow>
                     {/* User */}
                     <TableRow>

@@ -74,19 +74,25 @@ const AuthContext = ({ children }) => {
 
   useEffect(() => {
     const id = localStorage.getItem("id");
+    const role = localStorage.getItem("role");
     if (!auth && id) {
       handleGetUserDetail(id);
     }
+
     if (pathname === "/user/login") {
       if (!auth?.id && !id) {
         router?.push("/user/login");
       } else {
-        if (auth?.role === "ADMIN") {
+        if (role === "ADMIN") {
           router?.push("/admin");
-        } else if (auth?.role === "USER") {
-          router?.push("/product");
+        } else if (role === "USER") {
+          router?.push("/shop");
         }
       }
+    }
+
+    if (pathname?.includes("admin") && role === "USER") {
+      router?.push("/shop");
     }
   }, [auth, router, pathname]);
 

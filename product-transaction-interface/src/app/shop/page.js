@@ -221,7 +221,7 @@ const ProductHomePage = () => {
                   <IconButton
                     size="small"
                     onClick={() => {
-                      router.push(`/product/${product?.id}`);
+                      router.push(`/shop/${product?.id}`);
                     }}
                   >
                     <VisibilityOutlinedIcon />

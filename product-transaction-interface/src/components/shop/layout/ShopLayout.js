@@ -20,17 +20,16 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 
 const NAV_URL = [
-  { label: "Home", url: "/product" },
-  { label: "About", url: "/product/1" },
-  { label: "Contact", url: "" },
+  { label: "Home", url: "/shop" },
+  { label: "About", url: "/" },
+  { label: "Contact", url: "/" },
 ];
 
 const ShopLayout = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { cart } = useContext(CartStateContext);
-  const { auth } = useContext(AuthStateContext);
-  const { logout } = useContext(AuthStateContext);
+  const { auth, logout } = useContext(AuthStateContext);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -45,7 +44,11 @@ const ShopLayout = ({ children }) => {
     <div>
       <Box className="backdrop-blur-sm bg-white/30 p-2 scroll-smooth fixed w-screen z-50 top-0 font-mono px-10">
         <Box className="container mx-auto flex justify-between items-center align-middle">
-          <Typography variant="h4" fontFamily={"monospace"}>
+          <Typography
+            className="font-bold"
+            variant="h4"
+            fontFamily={"monospace"}
+          >
             G2
           </Typography>
           <div className="flex justify-end items-center align-middle text-xl space-x-5">
@@ -90,7 +93,7 @@ const ShopLayout = ({ children }) => {
                     "aria-labelledby": "basic-button",
                   }}
                 >
-                  <MenuItem onClick={() => router.push("/product/user")}>
+                  <MenuItem onClick={() => router.push("/shop/user")}>
                     <ListItemIcon>
                       <PersonOutlineOutlinedIcon />
                     </ListItemIcon>

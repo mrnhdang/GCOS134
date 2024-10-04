@@ -83,7 +83,7 @@ export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
           <Button
             variant="outlined"
             fullWidth
-            onClick={() => router.push("/product/order")}
+            onClick={() => router.push("/shop/order")}
           >
             Check out
           </Button>

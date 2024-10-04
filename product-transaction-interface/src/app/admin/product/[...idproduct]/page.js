@@ -6,7 +6,6 @@ import {
   Button,
   Typography,
   Box,
-  CardMedia,
   Select,
   MenuItem,
   FormControl,
@@ -79,10 +78,6 @@ export default function ProductForm({ params }) {
     handleEdit();
   };
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  };
-
   return (
     <Box
       sx={{
@@ -127,7 +122,7 @@ export default function ProductForm({ params }) {
           onChange={(e) => setPrice(e.target.value)}
           sx={{ mb: 3 }}
         />
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" sx={{ mb: 3 }}>
           <InputLabel>Category</InputLabel>
           <Select
             value={selectedCategory}
@@ -140,37 +135,23 @@ export default function ProductForm({ params }) {
             ))}
           </Select>
         </FormControl>
-        <Box sx={{ mb: 3, textAlign: "center" }}>
-          {image ? (
-            <CardMedia
-              component="img"
-              src={
-                typeof image === "string" ? image : URL.createObjectURL(image)
-              }
-              alt="Product Image"
-              sx={{
-                width: "100%",
-                height: "auto",
-                maxHeight: "300px",
-                objectFit: "contain",
-                marginBottom: "16px",
-              }}
-            />
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              No Image
-            </Typography>
-          )}
-
-          <Button variant="contained" component="label">
-            Upload Image
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleImageChange}
-            />
-          </Button>
+        <Box
+          sx={{
+            mb: 3,
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <TextField
+            label="Image Url"
+            variant="outlined"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            required
+            fullWidth
+          />
+          <img className="w-30 h-30" src={image} />
         </Box>
         <Button
           onClick={() => handleEdit()}

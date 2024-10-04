@@ -112,16 +112,17 @@ const OrderDetailPage = ({ params }) => {
               </h1>
             </List>
           </div>
-
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={() => {
-              router?.push(`/product/bill/${orderDetail?.billId}`);
-            }}
-          >
-            Procced Paymennt
-          </Button>
+          {orderDetail?.status !== "DONE" && (
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => {
+                router?.push(`/shop/bill/${orderDetail?.billId}`);
+              }}
+            >
+              Procced Paymennt
+            </Button>
+          )}
         </div>
       ) : (
         <CircularProgress />

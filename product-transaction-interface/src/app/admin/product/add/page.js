@@ -123,6 +123,7 @@ export default function AddProductForm() {
             required
             fullWidth
           />
+          <img className="w-30 h-30" src={image} />
 
           <Button
             onClick={() => handleAddProduct()}

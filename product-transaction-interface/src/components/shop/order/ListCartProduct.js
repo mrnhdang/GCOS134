@@ -38,7 +38,7 @@ const ListCartProduct = () => {
         "http://localhost:8080/api/v1/order",
         payload
       );
-      router.push(`/product/order/${res?.data?.id}`);
+      router.push(`/shop/order/${res?.data?.id}`);
     } catch (error) {
       const message = error?.response?.data?.message;
       setUiState({

@@ -82,13 +82,15 @@ const BillDetail = ({ billId }) => {
   };
 
   useEffect(() => {
-    if (countdown > 0) {
-      setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-    } else {
-      handleRemoveBill();
-      router.push("/product");
+    if (bill?.status !== "PAID") {
+      if (countdown > 0) {
+        setTimeout(() => {
+          setCountdown(countdown - 1);
+        }, 1000);
+      } else {
+        handleRemoveBill();
+        router.push("/shop");
+      }
     }
   }, [countdown]);
 
@@ -98,17 +100,20 @@ const BillDetail = ({ billId }) => {
 
   return (
     <div className="flex flex-col justify-start align-middle items-center h-full min-h-screen">
-      <Fab
-        sx={{
-          position: "fixed",
-          bottom: 20,
-          right: 20,
-        }}
-        className="font-bold text-2xl text-center text-white bg-gradient-to-tr from-gray-300 to-gray-400 hover:duration-1000 transition duration-200 ease-in-out hover:scale-105 "
-        variant="extended"
-      >
-        {formatMilliseconds(countdown * 1000)}
-      </Fab>
+      {bill?.status !== "PAID" && (
+        <Fab
+          sx={{
+            position: "fixed",
+            bottom: 20,
+            right: 20,
+          }}
+          className="font-bold text-2xl text-center text-white bg-gradient-to-tr from-gray-300 to-gray-400 hover:duration-1000 transition duration-200 ease-in-out hover:scale-105 "
+          variant="extended"
+        >
+          {formatMilliseconds(countdown * 1000)}
+        </Fab>
+      )}
+
       {uiState?.success && (
         <SuccessModal
           open={openModal}
@@ -176,7 +181,9 @@ const BillDetail = ({ billId }) => {
             </div>
             <h1 className="flex flex-col items-end text-blue-500">
               Total:
-              <span className="text-2xl font-bold">{formatNumberWithDots(bill?.totalPrice)}đ</span>
+              <span className="text-2xl font-bold">
+                {formatNumberWithDots(bill?.totalPrice)}đ
+              </span>
             </h1>
           </div>
         </Paper>
