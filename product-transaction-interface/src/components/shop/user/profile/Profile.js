@@ -1,6 +1,7 @@
 import { Grid, TextField } from "@mui/material";
 
 const Profile = ({ auth, handleOnChangeAuth }) => {
+  const role = localStorage.getItem("role");
   return (
     <div>
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -64,7 +65,7 @@ const Profile = ({ auth, handleOnChangeAuth }) => {
             type="text"
             value={auth?.role}
             id="outlined-disabled"
-            disabled
+            disabled={role !== "ADMIN"}
           />
         </Grid>
         <Grid item xs={6}>

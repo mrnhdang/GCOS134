@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import { formatDateTypeArray } from "@/util";
 import { useRouter } from "next/navigation";
+import CustomStatus from "@/generic/CustomStatus";
 
 const ShipForm = () => {
   const [orderList, setOrderList] = useState([]);
@@ -132,6 +133,7 @@ const ShipForm = () => {
                         inputProps={{ "aria-labelledby": labelId }}
                       />
                     </ListItemIcon>
+                    <h1>{order?.ship}</h1>
                     <ListItemText
                       sx={{
                         display: "flex",
@@ -140,7 +142,8 @@ const ShipForm = () => {
                       }}
                       id={labelId}
                       primary={`${order?.id} - ${formatDateTypeArray(order?.purchaseDate)} - ${order?.user?.username}`}
-                    />
+                    />{" "}
+                    <CustomStatus status={order?.status} />
                   </ListItemButton>
                 </ListItem>
               );

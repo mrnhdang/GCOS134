@@ -85,8 +85,8 @@ public class ShipService {
         Ship newShip = Ship.builder().status(OrderStatus.PROCESSING).user(user).orders(orders).build();
         orders.forEach(order -> {
             order.setShip(newShip);
-            orderRepository.save(order);
         });
+        orderRepository.saveAll(orders);
         return shipRepository.save(newShip);
     }
 
