@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BillGetDetailDto;
 import com.example.demo.dto.BillPaymentDto;
-import com.example.demo.entity.Bill;
 import com.example.demo.service.BillService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

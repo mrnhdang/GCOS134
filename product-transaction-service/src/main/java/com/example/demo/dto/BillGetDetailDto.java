@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
 import com.example.demo.entity.BillStatus;
-import com.example.demo.entity.User;
 import lombok.*;
 
 import java.math.BigDecimal;

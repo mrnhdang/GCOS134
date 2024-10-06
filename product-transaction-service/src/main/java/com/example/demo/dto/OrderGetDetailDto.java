@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.Bill;
 import com.example.demo.entity.OrderStatus;
 import com.example.demo.entity.User;
 import lombok.*;
