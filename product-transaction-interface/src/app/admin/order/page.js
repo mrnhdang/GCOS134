@@ -18,6 +18,7 @@ import axios from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import CustomStatus from "@/generic/CustomStatus";
+import { formatDateTypeArray } from "@/util";
 
 const OrderPage = () => {
   const router = useRouter();
@@ -103,7 +104,7 @@ const OrderPage = () => {
                       <TableCell>{order?.id}</TableCell>
                       <TableCell>
                         {order?.purchaseDate
-                          ? new Date(order?.purchaseDate).toLocaleDateString()
+                          ? formatDateTypeArray(order?.purchaseDate)
                           : "UNPAID"}
                       </TableCell>
                       <TableCell>

@@ -6,16 +6,19 @@ import {
   Alert,
   Button,
   CircularProgress,
+  Fab,
   List,
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { formatNumberWithDots } from "@/util";
+import { formatMilliseconds, formatNumberWithDots } from "@/util";
+import CustomStatus from "@/generic/CustomStatus";
 
 const OrderDetailPage = ({ params }) => {
   const { id } = params;
   const [uiState, setUiState] = useState();
   const [orderDetail, setOrderDetail] = useState();
+  const [countdown, setCountdown] = useState(30);
   const router = useRouter();
 
   const handleGetOrderDetail = useCallback(async () => {
@@ -35,9 +38,58 @@ const OrderDetailPage = ({ params }) => {
     }
   }, [orderDetail, id]);
 
+  const handleRemoveOrder = async () => {
+    try {
+      setUiState({ loading: true });
+
+      const res = await axios.delete(
+        `http://localhost:8080/api/v1/order/${id}`
+      );
+
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    try {
+      setUiState({ loading: true });
+
+      const res = await axios.patch(
+        `http://localhost:8080/api/v1/order/${id}/cancel`
+      );
+      handleGetOrderDetail();
+      setUiState({ loading: false });
+    } catch (error) {
+      const message = error?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
+    }
+  };
+
   useEffect(() => {
     handleGetOrderDetail();
   }, []);
+
+  useEffect(() => {
+    if (orderDetail?.status !== "DONE") {
+      if (countdown > 0) {
+        setTimeout(() => {
+          setCountdown(countdown - 1);
+        }, 1000);
+      } else {
+        handleRemoveOrder();
+        router.push("/shop");
+      }
+    }
+  }, [countdown]);
 
   const totalPrice = useMemo(
     () =>
@@ -49,6 +101,19 @@ const OrderDetailPage = ({ params }) => {
 
   return (
     <div className="h-full w-full min-h-screen flex flex-col items-center p-2">
+      {orderDetail?.status !== "DONE" && (
+        <Fab
+          sx={{
+            position: "fixed",
+            bottom: 20,
+            right: 20,
+          }}
+          className="font-bold text-2xl text-center text-white bg-gradient-to-tr from-gray-300 to-gray-400 hover:duration-1000 transition duration-200 ease-in-out hover:scale-105 "
+          variant="extended"
+        >
+          {formatMilliseconds(countdown * 1000)}
+        </Fab>
+      )}
       {uiState?.success && (
         <Alert color="success" severity="success">
           {uiState?.success}
@@ -75,6 +140,10 @@ const OrderDetailPage = ({ params }) => {
               <div className="flex items-stretch justify-between align-middle">
                 <h1 className="font-bold">Email: </h1>
                 <h1>{orderDetail?.user?.email}</h1>
+              </div>
+              <div className="flex items-stretch justify-between align-middle">
+                <h1 className="font-bold">Status: </h1>
+                <CustomStatus status={orderDetail?.status} />
               </div>
             </div>
 
@@ -121,6 +190,18 @@ const OrderDetailPage = ({ params }) => {
               }}
             >
               Procced Paymennt
+            </Button>
+          )}
+          {orderDetail?.status !== "CANCELLED" && (
+            <Button
+              variant="outlined"
+              color="error"
+              fullWidth
+              onClick={() => {
+                handleCancelOrder();
+              }}
+            >
+              Cancel Order
             </Button>
           )}
         </div>

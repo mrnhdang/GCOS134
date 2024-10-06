@@ -8,6 +8,8 @@ import {
   InputLabel,
   FormControl,
   Button,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -21,6 +23,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [uiState, setUiState] = useState({ loading: false });
 
   const handleInputUsername = (event) => {
     setUsername(event.target.value);
@@ -36,6 +39,7 @@ const LoginPage = () => {
   //login oke
   const handleLogin = async () => {
     try {
+      setUiState({ loading: true });
       if (username === "") {
         alert("Please enter a username");
       } else if (password === "") {
@@ -46,8 +50,13 @@ const LoginPage = () => {
         password,
       });
       login(res?.data);
+      setUiState({ loading: false });
     } catch (e) {
-      console.log(e);
+      const message = e?.response?.data?.message;
+      setUiState({
+        loading: false,
+        error: message,
+      });
     }
   };
 
@@ -60,52 +69,61 @@ const LoginPage = () => {
         <div className="flex flex-col items-center text-black text-[13px] mb-8">
           Enter your account detail to login
         </div>
-        <div className="flex flex-col items-center">
-          <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Username
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-basic"
-              type={"text"}
-              label="Username"
-              onChange={handleInputUsername}
-            />
-          </FormControl>
-          <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-basic"
-              type={showPassword ? "text" : "password"}
-              onChange={handleInputPassword}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
-          <div className="text-[10px] mt-2">Forgot password ?</div>
-          <Button
-            className="mt-4 ml-2 w-[250px]"
-            variant="contained"
-            onClick={() => {
-              handleLogin();
-            }}
-          >
-            Login
-          </Button>
-        </div>
+        {uiState?.error && (
+          <Alert severity="error" color="error">
+            {uiState?.error}
+          </Alert>
+        )}
+        {uiState?.loading ? (
+          <CircularProgress />
+        ) : (
+          <div className="flex flex-col items-center">
+            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password">
+                Username
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-basic"
+                type={"text"}
+                label="Username"
+                onChange={handleInputUsername}
+              />
+            </FormControl>
+            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-basic"
+                type={showPassword ? "text" : "password"}
+                onChange={handleInputPassword}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+            <div className="text-[10px] mt-2">Forgot password ?</div>
+            <Button
+              className="mt-4 ml-2 w-[250px]"
+              variant="contained"
+              onClick={() => {
+                handleLogin();
+              }}
+            >
+              Login
+            </Button>
+          </div>
+        )}
 
         <div className="flex flex-col items-center text-black text-[10px] mt-8">
           <div className="flex flex-row">
