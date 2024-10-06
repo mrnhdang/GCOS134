@@ -6,7 +6,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import Profile from "./profile/Profile";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthStateContext } from "@/provider/AuthContext";
 import { CircularProgress } from "@mui/material";
 import UserOrder from "./order/UserOrder";
@@ -19,6 +19,11 @@ const UserProfile = () => {
     handleGetUserDetail,
     uiState,
   } = useContext(AuthStateContext);
+
+  useEffect(() => {
+    handleGetUserDetail();
+  }, []);
+
   return (
     <div className="h-full min-h-screen p-2 flex justify-center">
       <div className="w-[90%]">

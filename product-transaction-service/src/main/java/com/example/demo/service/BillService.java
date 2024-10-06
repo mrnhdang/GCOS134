@@ -116,13 +116,13 @@ public class BillService {
         bill.setStatus(BillStatus.PAID);
 
         // update order
-        Order order = orderService.checkExistOrder(bill.getOrder().getId());
-        order.setStatus(OrderStatus.DONE);
-        orderRepository.save(order);
-
         BigDecimal updateBalance = user.getBalance().subtract(dto.payPrice());
         user.setBalance(updateBalance);
         userRepository.save(user);
+
+        Order order = orderService.checkExistOrder(bill.getOrder().getId());
+        order.setStatus(OrderStatus.DONE);
+        orderRepository.save(order);
 
         // update order details and update inventory
         orderDetailService.addOrUpdateOrderDetail(new ArrayList<>(), bill.getOrder());

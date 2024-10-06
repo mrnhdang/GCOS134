@@ -161,7 +161,7 @@ const UserOrder = () => {
                       </TableCell>
                       <TableCell>
                         {order?.products?.map((product, productIndex) => (
-                          <div key={productIndex}>
+                          <div key={productIndex} className="w-full">
                             <Typography variant="body1">
                               {product?.productName} - {product?.orderAmount}{" "}
                               pcs @ {formatNumberWithDots(product?.price)}đ

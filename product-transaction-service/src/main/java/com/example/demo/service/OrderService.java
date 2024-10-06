@@ -7,7 +7,6 @@ import com.example.demo.entity.*;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.*;
-import com.mongodb.client.result.UpdateResult;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
@@ -15,11 +14,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.Query;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -133,10 +132,9 @@ public class OrderService {
         // update user balance
         BigDecimal billPrice = cancelledOrder.getBill().getTotalPrice();
         BigDecimal updateBalance = cancelledOrder.getUser().getBalance().add(billPrice);
-        mongoTemplate.update(User.class)
-                .matching(where("user.id").is(userId))
-                .apply(new Update().set("user.balance", updateBalance))
-                .all();
+        Query query = new Query(Criteria.where("_id").is(new ObjectId(userId)));
+        Update update = new Update().set("balance", updateBalance);
+        mongoTemplate.updateFirst(query, update, User.class);
 
         return orderRepository.save(cancelledOrder);
     }

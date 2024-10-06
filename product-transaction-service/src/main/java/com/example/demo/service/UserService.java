@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.OrderGetDetailDto;
-import com.example.demo.dto.ShipDetailDto;
-import com.example.demo.dto.UserLoginDto;
-import com.example.demo.dto.UserRegisterDto;
+import com.example.demo.dto.*;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidInputParameter;
@@ -31,7 +28,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
     private UserRepository userRepository;
-    private MongoTemplate mongoTemplate;
+    private OrderService orderService;
+    private OrderRepository orderRepository;
 
     public User registerUser(UserRegisterDto dto) {
         User user = User.builder().username(dto.getUsername())
@@ -82,23 +80,14 @@ public class UserService {
     }
 
     public List<OrderGetDetailDto> getUserOrders(String userId) {
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.lookup("bill", "bill", "_id", "bill"),
-                Aggregation.unwind("bill"),
-                Aggregation.lookup("user", "user", "_id", "user"),
-                Aggregation.unwind("user"),
-                Aggregation.match(new Criteria("user._id").is(new ObjectId(userId))),
-                Aggregation.sort(Sort.by(Sort.Order.desc("purchaseDate"))),
-                Aggregation.project()
-                        .and("id").as("id")
-                        .and("bill._id").as("billId")
-                        .and("user").as("user")
-                        .and("status").as("status")
-                        .and("purchaseDate").as("purchaseDate")
-
-        );
-        AggregationResults<OrderGetDetailDto> results = mongoTemplate.aggregate(aggregation, "purchase_order", OrderGetDetailDto.class);
-        return results.getMappedResults();
+        List<Order> orders = orderRepository.findByUser(userId);
+        List<OrderGetDetailDto> orderGetDetailDtos = new ArrayList<>();
+        if (!orders.isEmpty()) {
+            orders.forEach(order -> {
+                orderGetDetailDtos.add(orderService.getOrderDetails(order.getId()));
+            });
+        }
+        return orderGetDetailDtos;
     }
 
 }

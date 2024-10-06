@@ -64,6 +64,7 @@ const OrderDetailPage = ({ params }) => {
         `http://localhost:8080/api/v1/order/${id}/cancel`
       );
       handleGetOrderDetail();
+      router.push("/shop/user");
       setUiState({ loading: false });
     } catch (error) {
       const message = error?.response?.data?.message;
@@ -79,7 +80,7 @@ const OrderDetailPage = ({ params }) => {
   }, []);
 
   useEffect(() => {
-    if (orderDetail?.status !== "DONE") {
+    if (orderDetail?.status !== "DONE" && orderDetail?.status !== "CANCELLED") {
       if (countdown > 0) {
         setTimeout(() => {
           setCountdown(countdown - 1);
@@ -101,19 +102,20 @@ const OrderDetailPage = ({ params }) => {
 
   return (
     <div className="h-full w-full min-h-screen flex flex-col items-center p-2">
-      {orderDetail?.status !== "DONE" && (
-        <Fab
-          sx={{
-            position: "fixed",
-            bottom: 20,
-            right: 20,
-          }}
-          className="font-bold text-2xl text-center text-white bg-gradient-to-tr from-gray-300 to-gray-400 hover:duration-1000 transition duration-200 ease-in-out hover:scale-105 "
-          variant="extended"
-        >
-          {formatMilliseconds(countdown * 1000)}
-        </Fab>
-      )}
+      {orderDetail?.status !== "DONE" &&
+        orderDetail?.status !== "CANCELLED" && (
+          <Fab
+            sx={{
+              position: "fixed",
+              bottom: 20,
+              right: 20,
+            }}
+            className="font-bold text-2xl text-center text-white bg-gradient-to-tr from-gray-300 to-gray-400 hover:duration-1000 transition duration-200 ease-in-out hover:scale-105 "
+            variant="extended"
+          >
+            {formatMilliseconds(countdown * 1000)}
+          </Fab>
+        )}
       {uiState?.success && (
         <Alert color="success" severity="success">
           {uiState?.success}
@@ -181,18 +183,19 @@ const OrderDetailPage = ({ params }) => {
               </h1>
             </List>
           </div>
-          {orderDetail?.status !== "DONE" && (
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => {
-                router?.push(`/shop/bill/${orderDetail?.billId}`);
-              }}
-            >
-              Procced Paymennt
-            </Button>
-          )}
-          {orderDetail?.status !== "CANCELLED" && (
+          {orderDetail?.status !== "DONE" &&
+            orderDetail?.status !== "CANCELLED" && (
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => {
+                  router?.push(`/shop/bill/${orderDetail?.billId}`);
+                }}
+              >
+                Procced Paymennt
+              </Button>
+            )}
+          {orderDetail?.status === "DONE" && (
             <Button
               variant="outlined"
               color="error"
