@@ -11,6 +11,13 @@ import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +31,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
     private UserRepository userRepository;
-    private OrderRepository orderRepository;
-    private OrderService orderService;
+    private MongoTemplate mongoTemplate;
 
     public User registerUser(UserRegisterDto dto) {
         User user = User.builder().username(dto.getUsername())
@@ -33,7 +39,7 @@ public class UserService {
                 .phoneNumber(dto.getPhoneNumber())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
-                .role(dto.getRole())
+                .role("USER")
                 .balance(dto.getBalance())
                 .build();
         return userRepository.save(user);
@@ -76,14 +82,23 @@ public class UserService {
     }
 
     public List<OrderGetDetailDto> getUserOrders(String userId) {
-        List<Order> orders = orderRepository.findByUser(userId);
-        List<OrderGetDetailDto> orderGetDetailDtos = new ArrayList<>();
-        if (!orders.isEmpty()) {
-            orders.forEach(order -> {
-                orderGetDetailDtos.add(orderService.getOrderDetails(order.getId()));
-            });
-        }
-        return orderGetDetailDtos;
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.lookup("bill", "bill", "_id", "bill"),
+                Aggregation.unwind("bill"),
+                Aggregation.lookup("user", "user", "_id", "user"),
+                Aggregation.unwind("user"),
+                Aggregation.match(new Criteria("user._id").is(new ObjectId(userId))),
+                Aggregation.sort(Sort.by(Sort.Order.desc("purchaseDate"))),
+                Aggregation.project()
+                        .and("id").as("id")
+                        .and("bill._id").as("billId")
+                        .and("user").as("user")
+                        .and("status").as("status")
+                        .and("purchaseDate").as("purchaseDate")
+
+        );
+        AggregationResults<OrderGetDetailDto> results = mongoTemplate.aggregate(aggregation, "purchase_order", OrderGetDetailDto.class);
+        return results.getMappedResults();
     }
 
 }

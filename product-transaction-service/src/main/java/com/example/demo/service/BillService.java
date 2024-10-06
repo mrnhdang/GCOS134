@@ -11,6 +11,10 @@ import com.example.demo.repository.OrderDetailRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,19 +34,28 @@ public class BillService {
     private UserRepository userRepository;
     private BillRepository billRepository;
     private OrderRepository orderRepository;
+    private MongoTemplate mongoTemplate;
 
+    public List<BillGetDetailDto> findAllBillSortByPurchaseDate() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.lookup("purchase_order", "order", "_id", "order"),
+                Aggregation.unwind("order"),
+                Aggregation.sort(Sort.by(
+                        Sort.Order.desc("order.purchaseDate"))),
+                Aggregation.project()
+                        .and("id").as("id")
+                        .and("order._id").as("orderId")
+                        .and("status").as("status")
+                        .and("payDate").as("payDate")
+                        .and("order.user.username").as("username")
+                        .and("totalPrice").as("totalPrice")
+                );
+        AggregationResults<BillGetDetailDto> results = mongoTemplate.aggregate(aggregation, "bill", BillGetDetailDto.class);
+        return results.getMappedResults();
+    }
 
     public List<BillGetDetailDto> getAllBill() {
-        List<Bill> bills = billRepository.findAll();
-
-        return bills.stream().map(bill -> BillGetDetailDto.builder()
-                .id(bill.getId())
-                .username(bill.getOrder().getUser() != null ? bill.getOrder().getUser().getUsername() : "")
-                .orderId(bill.getOrder().getId())
-                .payDate(bill.getPayDate())
-                .status(bill.getStatus())
-                .totalPrice(bill.getTotalPrice())
-                .build()).toList();
+        return findAllBillSortByPurchaseDate();
     }
 
     public Bill checkExistBill(String id) {

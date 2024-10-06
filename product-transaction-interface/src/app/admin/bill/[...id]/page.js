@@ -15,6 +15,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
+import CustomStatus from "@/generic/CustomStatus";
 
 const BillDetailPage = ({ params }) => {
   const [bill, setBill] = useState(null);
@@ -41,7 +42,7 @@ const BillDetailPage = ({ params }) => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, height: "100%", minHeight: "100vh" }}>
       <Paper
         elevation={3}
         sx={{ p: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}

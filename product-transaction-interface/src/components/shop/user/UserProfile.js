@@ -20,43 +20,45 @@ const UserProfile = () => {
     uiState,
   } = useContext(AuthStateContext);
   return (
-    <div className="h-full min-h-screen p-2">
-      <Accordion defaultExpanded>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          <div className="font-bold">Profile</div>
-        </AccordionSummary>
-        {uiState?.loading ? (
-          <CircularProgress />
-        ) : (
+    <div className="h-full min-h-screen p-2 flex justify-center">
+      <div className="w-[90%]">
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1-content"
+            id="panel1-header"
+          >
+            <div className="font-bold">Profile</div>
+          </AccordionSummary>
+          {uiState?.loading ? (
+            <CircularProgress />
+          ) : (
+            <AccordionDetails>
+              <Profile auth={auth} handleOnChangeAuth={handleOnChangeAuth} />
+            </AccordionDetails>
+          )}
+
+          <AccordionActions>
+            <Button onClick={() => handleGetUserDetail(auth?.id)}>
+              Discard changes
+            </Button>
+            <Button onClick={() => handleEditUserDetail()}>Save</Button>
+          </AccordionActions>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2-content"
+            id="panel2-header"
+          >
+            <div className="font-bold">Your Order</div>
+          </AccordionSummary>
           <AccordionDetails>
-            <Profile auth={auth} handleOnChangeAuth={handleOnChangeAuth} />
+            <UserOrder />
           </AccordionDetails>
-        )}
-
-        <AccordionActions>
-          <Button onClick={() => handleGetUserDetail(auth?.id)}>
-            Discard changes
-          </Button>
-          <Button onClick={() => handleEditUserDetail()}>Save</Button>
-        </AccordionActions>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2-content"
-          id="panel2-header"
-        >
-          <div className="font-bold">Your Order</div>
-        </AccordionSummary>
-        <AccordionDetails>
-          <UserOrder />
-        </AccordionDetails>
-      </Accordion>
+        </Accordion>
+      </div>
     </div>
   );
 };

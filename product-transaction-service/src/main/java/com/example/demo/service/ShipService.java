@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -72,6 +73,9 @@ public class ShipService {
         if (dto.orders().isEmpty()) throw new InvalidInputParameter("Field 'orders' must not empty.");
         dto.orders().forEach(orderId -> {
             Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
+            if (Objects.equals(order.getStatus(), OrderStatus.CANCELLED)) {
+                throw new InvalidInputParameter("Order with id " + orderId + " has been cancelled.");
+            }
             if (order.getShip() != null && order.getShip().getId() != null) {
                 throw new InvalidInputParameter("Order with id " + orderId + " is already in the shipping queue.");
             }

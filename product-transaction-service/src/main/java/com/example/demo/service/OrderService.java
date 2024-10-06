@@ -7,13 +7,25 @@ import com.example.demo.entity.*;
 import com.example.demo.exception.InvalidInputParameter;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.repository.*;
+import com.mongodb.client.result.UpdateResult;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.Query;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
 @Transactional
@@ -25,9 +37,29 @@ public class OrderService {
     private OrderDetailRepository orderDetailRepository;
     private InventoryRepository inventoryRepository;
     private OrderDetailService orderDetailService;
+    private MongoTemplate mongoTemplate;
 
     public Order checkExistOrder(String orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't exist."));
+    }
+
+    public List<OrderGetDetailDto> findAllOrderOrderByPurchaseDate() {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.lookup("bill", "bill", "_id", "bill"),
+                Aggregation.unwind("bill"),
+                Aggregation.lookup("user", "user", "_id", "user"),
+                Aggregation.unwind("user"),
+                Aggregation.sort(Sort.by(Sort.Order.desc("purchaseDate"))),
+                Aggregation.project()
+                        .and("id").as("id")
+                        .and("bill._id").as("billId")
+                        .and("user").as("user")
+                        .and("status").as("status")
+                        .and("purchaseDate").as("purchaseDate")
+
+        );
+        AggregationResults<OrderGetDetailDto> results = mongoTemplate.aggregate(aggregation, "purchase_order", OrderGetDetailDto.class);
+        return results.getMappedResults();
     }
 
     public List<OrderProductDto> mapToProductDto(List<Product> products, String orderId) {
@@ -50,14 +82,7 @@ public class OrderService {
     }
 
     public List<OrderGetDetailDto> getAllOrder() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream().map((order) -> OrderGetDetailDto.builder()
-                .purchaseDate(order.getPurchaseDate())
-                .billId(order.getBill() != null ? order.getBill().getId() : null)
-                .id(order.getId())
-                .user(order.getUser())
-                .status(order.getStatus())
-                .build()).toList();
+        return findAllOrderOrderByPurchaseDate();
     }
 
     public OrderGetDetailDto getOrderDetails(String orderId) {
@@ -96,6 +121,23 @@ public class OrderService {
         Order cancelledOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order with id " + orderId + " doesn't found."));
         cancelledOrder.setStatus(OrderStatus.CANCELLED);
+        String userId = cancelledOrder.getUser().getId();
+        String billId = cancelledOrder.getBill().getId();
+
+        // update bill status
+        mongoTemplate
+                .update(Bill.class).matching(where("bill.id").is(new ObjectId(billId)))
+                .apply(new Update().set("bill.status", BillStatus.CANCELLED))
+                .first();
+
+        // update user balance
+        BigDecimal billPrice = cancelledOrder.getBill().getTotalPrice();
+        BigDecimal updateBalance = cancelledOrder.getUser().getBalance().add(billPrice);
+        mongoTemplate.update(User.class)
+                .matching(where("user.id").is(userId))
+                .apply(new Update().set("user.balance", updateBalance))
+                .all();
+
         return orderRepository.save(cancelledOrder);
     }
 

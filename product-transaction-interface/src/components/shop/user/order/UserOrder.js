@@ -12,11 +12,12 @@ import {
   CircularProgress,
   Grid,
 } from "@mui/material";
-import { formatDateTypeArray } from "@/util";
+import { formatDateTypeArray, formatNumberWithDots } from "@/util";
 import CustomStatus from "@/generic/CustomStatus";
 
 const UserOrder = () => {
   const id = localStorage.getItem("id"); // Get the user ID from the URL
+  const username = localStorage.getItem("username");
 
   // State for order data
   const [orders, setOrders] = useState([]);
@@ -76,14 +77,14 @@ const UserOrder = () => {
   return (
     <Container style={{ marginTop: "2rem" }}>
       <Typography variant="h4" gutterBottom>
-        Orders for User ID: {id}
+        Orders for User: {username}
       </Typography>
-      {orders.length === 0 ? (
+      {orders?.length === 0 ? (
         <Typography variant="h6" gutterBottom>
           No orders found.
         </Typography>
       ) : (
-        orders.map((order, orderIndex) => (
+        orders?.map((order, orderIndex) => (
           <Grid
             container
             spacing={2}
@@ -163,7 +164,7 @@ const UserOrder = () => {
                           <div key={productIndex}>
                             <Typography variant="body1">
                               {product?.productName} - {product?.orderAmount}{" "}
-                              pcs @ ${product?.price}
+                              pcs @ {formatNumberWithDots(product?.price)}đ
                             </Typography>
                           </div>
                         ))}
