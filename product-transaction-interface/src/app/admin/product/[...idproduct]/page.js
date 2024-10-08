@@ -118,6 +118,7 @@ export default function ProductForm({ params }) {
           variant="outlined"
           fullWidth
           type="number"
+          InputProps={{ inputProps: { min: 0, max: 10 } }}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           sx={{ mb: 3 }}

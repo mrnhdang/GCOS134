@@ -23,8 +23,7 @@ export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
   const handleChangeProductQuantity = (product, e, index) => {
     const updateQuantity = e.target.value;
     let updateCart = [...cart]; // Replace with your actual cart state variable
-    if (updateQuantity == "0" || !updateQuantity) removeFromCart(product);
-
+    if (updateQuantity == 0 || !updateQuantity) removeFromCart(product);
     if (index >= 0 && index < updateCart?.length) {
       updateCart[index].quantity = updateQuantity;
       setCart(updateCart);
@@ -65,6 +64,7 @@ export default function CustomDrawer({ cart, openDrawer, setOpenDrawer }) {
                     <TextField
                       id="outlined-number"
                       type="number"
+                      InputProps={{ inputProps: { min: 0, max: 10 } }}
                       sx={{ width: "70px" }}
                       defaultValue={product?.quantity}
                       onChange={(e) =>

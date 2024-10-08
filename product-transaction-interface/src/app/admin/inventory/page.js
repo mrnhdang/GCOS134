@@ -138,6 +138,8 @@ const InventoryPage = () => {
                       <TableCell>
                         {isEdit?.id === inventory?.id ? (
                           <TextField
+                            InputProps={{ inputProps: { min: 0, max: 10 } }}
+                            type="number"
                             defaultValue={inventory?.currentQuantity}
                             onChange={(e) => setQuantity(e.target.value)}
                           />

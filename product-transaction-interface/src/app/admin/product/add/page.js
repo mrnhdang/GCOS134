@@ -96,6 +96,7 @@ export default function AddProductForm() {
             variant="outlined"
             value={price}
             type="number"
+            InputProps={{ inputProps: { min: 0, max: 10 } }}
             onChange={(e) => setPrice(e.target.value)}
             required
             fullWidth

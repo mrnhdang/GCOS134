@@ -185,15 +185,29 @@ const OrderDetailPage = ({ params }) => {
           </div>
           {orderDetail?.status !== "DONE" &&
             orderDetail?.status !== "CANCELLED" && (
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  router?.push(`/shop/bill/${orderDetail?.billId}`);
-                }}
-              >
-                Procced Paymennt
-              </Button>
+              <div className="flex w-full space-x-2">
+                {" "}
+                <Button
+                  variant="outlined"
+                  color="error"
+                  fullWidth
+                  onClick={() => {
+                    handleRemoveOrder();
+                    router?.push(`/shop`);
+                  }}
+                >
+                  Cancel Order
+                </Button>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => {
+                    router?.push(`/shop/bill/${orderDetail?.billId}`);
+                  }}
+                >
+                  Procced Paymennt
+                </Button>
+              </div>
             )}
           {orderDetail?.status === "DONE" && (
             <Button
@@ -204,7 +218,7 @@ const OrderDetailPage = ({ params }) => {
                 handleCancelOrder();
               }}
             >
-              Cancel Order
+              Cancel Shipping Order
             </Button>
           )}
         </div>

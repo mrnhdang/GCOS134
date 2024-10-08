@@ -188,13 +188,27 @@ const BillDetail = ({ billId }) => {
           </div>
         </Paper>
         {bill?.status !== "PAID" && (
-          <Button
-            variant="outlined"
-            onClick={() => handleSubmitPayment()}
-            fullWidth
-          >
-            Submit Payment
-          </Button>
+          <div className="flex w-full space-x-2">
+            {" "}
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => {
+                handleRemoveBill();
+                router.push("/shop");
+              }}
+              fullWidth
+            >
+              Cancel Payment
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleSubmitPayment()}
+              fullWidth
+            >
+              Submit Payment
+            </Button>
+          </div>
         )}
       </div>
     </div>

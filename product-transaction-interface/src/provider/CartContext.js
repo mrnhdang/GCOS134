@@ -30,14 +30,16 @@ const CartContext = ({ children }) => {
 
   const removeFromCart = (product) => {
     // Remove product from cart by filtering out the item with the matching id
-    const updatedCart = cart.filter((item) => item?.id !== product?.id);
+    const updatedCart = cart?.filter((item) => item?.id !== product?.id);
 
     // Set the updated cart state after removal
     setCart(updatedCart);
   };
 
   return (
-    <CartStateContext.Provider value={{ cart, setCart, addToCart, removeFromCart }}>
+    <CartStateContext.Provider
+      value={{ cart, setCart, addToCart, removeFromCart }}
+    >
       {children}
     </CartStateContext.Provider>
   );

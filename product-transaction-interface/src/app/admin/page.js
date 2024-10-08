@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { formatNumberWithDots } from "@/util";
 
 const AdminPage = () => {
   const router = useRouter();
@@ -97,8 +98,8 @@ const AdminPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listProduct.length > 0 ? (
-                listProduct.map((product) => (
+              {listProduct?.length > 0 ? (
+                listProduct?.map((product) => (
                   <TableRow
                     key={product?.id}
                     sx={{ "&:hover": { backgroundColor: "#f0f0f0" } }}
@@ -113,7 +114,9 @@ const AdminPage = () => {
                       />
                     </TableCell>
                     <TableCell>{product?.productName}</TableCell>
-                    <TableCell>{product?.price} VND</TableCell>
+                    <TableCell>
+                      {formatNumberWithDots(product?.price)} VND
+                    </TableCell>
                     <TableCell>{product?.category?.categoryName}</TableCell>
                     <TableCell>
                       <IconButton

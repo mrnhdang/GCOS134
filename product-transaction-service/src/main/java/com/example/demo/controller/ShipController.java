@@ -49,4 +49,9 @@ public class ShipController {
     public void deleteOrderShipping(@PathVariable("id") String shipId) {
         shipService.deleteOrderShipping(shipId);
     }
+
+    @DeleteMapping("/delete-all")
+    public void deleteAllShippingOrder(){
+        shipService.deleteAllShipping();
+    }
 }

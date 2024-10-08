@@ -104,7 +104,7 @@ const ListCartProduct = () => {
                 <ListItemText
                   className="w-[500px]"
                   primary={product?.productName}
-                  secondary={product?.price}
+                  secondary={formatNumberWithDots(product?.price)}
                 />
                 <p className="bg-blue-400 w-8 h-8 p-1 rounded-lg text-center align-middle text-white font-bold">
                   {product?.quantity}

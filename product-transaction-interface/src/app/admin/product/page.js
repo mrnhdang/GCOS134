@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button } from "@mui/material";
 import axios from "axios";
+import { formatNumberWithDots } from "@/util";
 
 const AdminPage = () => {
   const router = useRouter();
@@ -81,9 +82,11 @@ const AdminPage = () => {
                 <TableCell component="th" scope="row">
                   {index + 1}
                 </TableCell>
-                <TableCell align="right">{row.id}</TableCell>
-                <TableCell align="right">{row.productName}</TableCell>
-                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row?.id}</TableCell>
+                <TableCell align="right">{row?.productName}</TableCell>
+                <TableCell align="right">
+                  {formatNumberWithDots(row?.price)}
+                </TableCell>
                 <TableCell align="right">
                   <Button
                     className="rounded-lg p-1 bg-green-600 flex text-center text-white justify-center items-center"

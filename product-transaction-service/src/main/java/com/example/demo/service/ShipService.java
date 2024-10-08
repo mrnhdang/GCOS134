@@ -107,4 +107,8 @@ public class ShipService {
         });
         shipRepository.deleteById(shipId);
     }
+
+    public void deleteAllShipping(){
+        shipRepository.deleteAll();
+    }
 }

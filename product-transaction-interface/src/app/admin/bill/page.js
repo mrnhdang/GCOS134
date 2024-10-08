@@ -51,7 +51,7 @@ const BillListPage = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, minHeight: "100vh", height: "100%" }}>
       <Paper
         elevation={3}
         sx={{ p: 3, mb: 3, backgroundColor: "#f5f5f5", borderRadius: 3 }}
